@@ -5,6 +5,39 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.0] - 2026-01-03
+
+### Added
+
+- 新增 `.cursorrules` 模板 (Cursor AI 规则配置)
+  - 项目架构规范
+  - SDD 工作流程说明
+  - 编码规范和约束
+  - API/数据库设计规范
+- 新增 `CLAUDE.md` 模板 (Claude Code 配置)
+  - 项目概览和技术栈
+  - 快速命令说明
+  - 常见操作指南
+- Go 版本升级到 1.24
+- 完善 P1/P2 文档
+  - `docs/quick-start.md` - 快速开始
+  - `docs/installation.md` - 安装说明
+  - `docs/workflow.md` - 工作流程
+  - `docs/deployment.md` - 部署指南
+  - `docs/templates-guide.md` - 模板使用指南
+  - `templates/README.md` - 模板总览
+  - `go-zero/README.md` - Go-Zero 项目说明
+
+### Fixed
+
+- 修复 `compare_versions` 函数 zsh 兼容性问题
+- 修复升级脚本 `set -e` 导致过早退出的问题
+- 修复 `head -n -1` 在 macOS 不兼容问题
+- 修复文档中 `bash -- --check` 命令错误 (改为 `bash -s -- --check`)
+- 修复 README.md 过时的安装命令
+
+---
+
 ## [0.2.0] - 2026-01-03
 
 ### Fixed

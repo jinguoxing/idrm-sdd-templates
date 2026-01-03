@@ -5,7 +5,7 @@
 
 set -e
 
-VERSION="0.2.0"
+VERSION="0.3.0"
 
 # 获取脚本所在目录
 if [ -n "$BASH_SOURCE" ]; then
