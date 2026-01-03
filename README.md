@@ -2,7 +2,7 @@
 
 > **Spec-Driven Development Templates for Go-Zero Projects**
 
-[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/jinguoxing/idrm-sdd-templates)
+[![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)](https://github.com/jinguoxing/idrm-sdd-templates)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ---
@@ -26,21 +26,22 @@ IDRM SDD Templates 是一套基于 [Spec Kit](https://github.com/anthropics/spec
 
 ### 前置条件
 
-- [Node.js](https://nodejs.org/) >= 18
 - [Go](https://golang.org/) >= 1.24
 - [goctl](https://go-zero.dev/docs/goctl/goctl) (Go-Zero CLI)
+- [uv](https://github.com/astral-sh/uv) (Python 包管理器)
 
 ### 安装步骤
 
 ```bash
-# Step 1: 使用 Spec Kit 官方初始化
-# 选择 Cursor
-npx @anthropic/speckit init --agent cursor
+# Step 1: 安装 Spec Kit CLI
+uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
 
-# 或选择 Claude Code
-npx @anthropic/speckit init --agent claude
+# Step 2: 使用 Spec Kit 官方初始化 (选择 Cursor 或 Claude)
+specify init . --ai cursor-agent --force
+# 或
+specify init . --ai claude --force
 
-# Step 2: 安装 IDRM SDD Template
+# Step 3: 安装 IDRM SDD Template
 curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-install.sh | bash
 ```
 
