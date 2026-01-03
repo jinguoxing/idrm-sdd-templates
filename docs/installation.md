@@ -147,7 +147,7 @@ my-project/
 ### 检查更新
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-upgrade.sh | bash -- --check
+curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-upgrade.sh | bash -s -- --check
 ```
 
 ### 执行升级
