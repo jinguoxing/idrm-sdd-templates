@@ -36,10 +36,12 @@ source "${SCRIPT_DIR}/lib/common.sh"
 if [ "$IS_REMOTE" = true ]; then
     TEMPLATE_DIR="${TEMP_DIR}/templates"
     MEMORY_DIR="${TEMP_DIR}/memory"
+    GO_ZERO_DIR="${TEMP_DIR}/go-zero"
     REMOTE_VERSION=$(cat "${TEMP_DIR}/VERSION" 2>/dev/null || echo "unknown")
 else
     TEMPLATE_DIR="${SCRIPT_DIR}/../templates"
     MEMORY_DIR="${SCRIPT_DIR}/../memory"
+    GO_ZERO_DIR="${SCRIPT_DIR}/../go-zero"
     REMOTE_VERSION=$(cat "${SCRIPT_DIR}/../VERSION" 2>/dev/null || echo "unknown")
 fi
 
@@ -116,6 +118,32 @@ upgrade_templates() {
     if [ -f "${MEMORY_DIR}/constitution.md" ]; then
         cp "${MEMORY_DIR}/constitution.md" ".specify/memory/constitution.md"
         print_success "更新 .specify/memory/constitution.md"
+    fi
+    
+    # 从 .sdd-version 读取项目配置
+    local project_name=""
+    local go_module=""
+    if [ -f ".sdd-version" ]; then
+        project_name=$(grep '"project_name"' .sdd-version | sed 's/.*: *"\([^"]*\)".*/\1/')
+        go_module=$(grep '"go_module"' .sdd-version | sed 's/.*: *"\([^"]*\)".*/\1/')
+    fi
+    
+    # 更新 .cursorrules (Cursor AI 规则)
+    if [ -f "${GO_ZERO_DIR}/.cursorrules.tpl" ] && [ -n "$project_name" ]; then
+        cp "${GO_ZERO_DIR}/.cursorrules.tpl" ".cursorrules"
+        sed -i.bak "s/{{PROJECT_NAME}}/${project_name}/g" ".cursorrules"
+        sed -i.bak "s|{{GO_MODULE}}|${go_module}|g" ".cursorrules"
+        rm -f ".cursorrules.bak"
+        print_success "更新 .cursorrules"
+    fi
+    
+    # 更新 CLAUDE.md (Claude Code 配置)
+    if [ -f "${GO_ZERO_DIR}/CLAUDE.md.tpl" ] && [ -n "$project_name" ]; then
+        cp "${GO_ZERO_DIR}/CLAUDE.md.tpl" "CLAUDE.md"
+        sed -i.bak "s/{{PROJECT_NAME}}/${project_name}/g" "CLAUDE.md"
+        sed -i.bak "s|{{GO_MODULE}}|${go_module}|g" "CLAUDE.md"
+        rm -f "CLAUDE.md.bak"
+        print_success "更新 CLAUDE.md"
     fi
 }
 
