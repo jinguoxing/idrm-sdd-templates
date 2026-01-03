@@ -5,7 +5,7 @@
 
 set -e
 
-VERSION="0.1.0"
+VERSION="0.2.0"
 
 # 获取脚本所在目录
 if [ -n "$BASH_SOURCE" ]; then
@@ -51,6 +51,7 @@ SELECTED_SERVICES=()
 # 项目配置
 PROJECT_NAME=""
 GO_MODULE=""
+DOCKER_REGISTRY="docker.io"
 DB_HOST="localhost"
 DB_PORT="3306"
 DB_USER="root"
@@ -191,9 +192,13 @@ init_go_zero_services() {
     if [ -f "${GO_ZERO_DIR}/Makefile.tpl" ]; then
         cp "${GO_ZERO_DIR}/Makefile.tpl" "Makefile"
         replace_template_vars "Makefile" \
-            "PROJECT_NAME" "$PROJECT_NAME"
+            "PROJECT_NAME" "$PROJECT_NAME" \
+            "DOCKER_REGISTRY" "$DOCKER_REGISTRY"
         print_success "创建 Makefile"
     fi
+    
+    # 复制部署文件
+    init_deploy_files "$access_secret"
     
     # 复制并处理 go.mod
     if [ -f "${GO_ZERO_DIR}/go.mod.tpl" ]; then
@@ -222,11 +227,55 @@ init_go_zero_services() {
     done
 }
 
+# 初始化部署文件
+init_deploy_files() {
+    local access_secret=$1
+    
+    echo ""
+    echo "  [部署文件]"
+    
+    # 创建部署目录
+    mkdir -p deploy/docker deploy/k8s
+    
+    # 复制 Dockerfile
+    if [ -f "${GO_ZERO_DIR}/deploy/docker/Dockerfile.tpl" ]; then
+        cp "${GO_ZERO_DIR}/deploy/docker/Dockerfile.tpl" "deploy/docker/Dockerfile"
+        print_success "创建 deploy/docker/Dockerfile"
+    fi
+    
+    # 复制 docker-compose.yaml
+    if [ -f "${GO_ZERO_DIR}/deploy/docker/docker-compose.yaml.tpl" ]; then
+        cp "${GO_ZERO_DIR}/deploy/docker/docker-compose.yaml.tpl" "deploy/docker/docker-compose.yaml"
+        replace_template_vars "deploy/docker/docker-compose.yaml" \
+            "PROJECT_NAME" "$PROJECT_NAME" \
+            "DB_NAME" "$DB_NAME" \
+            "DB_PASSWORD" "$DB_PASSWORD"
+        print_success "创建 deploy/docker/docker-compose.yaml"
+    fi
+    
+    # 复制 K8s 文件
+    for k8s_file in deployment.yaml service.yaml configmap.yaml; do
+        if [ -f "${GO_ZERO_DIR}/deploy/k8s/${k8s_file}.tpl" ]; then
+            cp "${GO_ZERO_DIR}/deploy/k8s/${k8s_file}.tpl" "deploy/k8s/${k8s_file}"
+            replace_template_vars "deploy/k8s/${k8s_file}" \
+                "PROJECT_NAME" "$PROJECT_NAME" \
+                "DOCKER_REGISTRY" "$DOCKER_REGISTRY" \
+                "DB_HOST" "$DB_HOST" \
+                "DB_PORT" "$DB_PORT" \
+                "DB_NAME" "$DB_NAME" \
+                "DB_USER" "$DB_USER" \
+                "DB_PASSWORD" "$DB_PASSWORD" \
+                "ACCESS_SECRET" "$access_secret"
+            print_success "创建 deploy/k8s/${k8s_file}"
+        fi
+    done
+}
+
 # 初始化 API 服务
 init_api_service() {
     local access_secret=$1
     
-    mkdir -p api/doc api/etc api/internal/svc api/swagger
+    mkdir -p api/doc api/etc api/internal/svc
     
     # 复制 api.api
     if [ -f "${GO_ZERO_DIR}/api/doc/api.api.tpl" ]; then
