@@ -3,7 +3,7 @@
 -- Location: migrations/{module}/{table}.sql
 
 CREATE TABLE `{{table_name}}` (
-    `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `id` CHAR(36) NOT NULL COMMENT '主键ID (UUID v7)',
     -- === Business Fields ===
     -- `name` varchar(100) NOT NULL COMMENT '名称',
     -- `code` varchar(50) NOT NULL COMMENT '编码',

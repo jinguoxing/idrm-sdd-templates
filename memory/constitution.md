@@ -120,6 +120,42 @@ HTTP Request → Handler → Logic → Model → Database
 
 ---
 
+## 🔑 主键规范
+
+### UUID v7
+
+所有表 **必须** 使用 UUID v7 作为主键:
+
+| 属性 | 值 |
+|------|-----|
+| **类型** | `CHAR(36)` (MySQL) |
+| **生成** | 服务端生成 `github.com/google/uuid` v7 |
+| **格式** | `01944f4e-7c6a-7000-8000-000000000001` |
+
+### 优势
+
+- ✅ 时间有序 (可按时间排序)
+- ✅ 分布式安全 (无需协调)
+- ✅ 无自增锁 (高并发)
+
+### 禁止
+
+- ❌ AUTO_INCREMENT 自增主键
+- ❌ UUID v4 (无序，索引碎片)
+- ❌ 雪花算法 (需要协调)
+
+### 代码示例
+
+```go
+import "github.com/google/uuid"
+
+// 生成 UUID v7
+id, _ := uuid.NewV7()
+entity.Id = id.String()
+```
+
+---
+
 ## 📁 Model 层结构
 
 ### 目录组织
@@ -139,9 +175,9 @@ model/{module}/{table}/
 ```go
 type Model interface {
     Insert(ctx context.Context, data *T) (*T, error)
-    FindOne(ctx context.Context, id int64) (*T, error)
+    FindOne(ctx context.Context, id string) (*T, error)  // UUID v7
     Update(ctx context.Context, data *T) error
-    Delete(ctx context.Context, id int64) error
+    Delete(ctx context.Context, id string) error         // UUID v7
     WithTx(tx interface{}) Model
     Trans(ctx context.Context, fn func(ctx context.Context, model Model) error) error
 }

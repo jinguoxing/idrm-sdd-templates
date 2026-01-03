@@ -164,7 +164,7 @@ type Model interface {
 
 ```sql
 CREATE TABLE `{table}` (
-    `id` bigint unsigned NOT NULL AUTO_INCREMENT COMMENT 'ID',
+    `id` CHAR(36) NOT NULL COMMENT 'ID (UUID v7)',
     `name` varchar(50) NOT NULL COMMENT '名称',
     `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -177,7 +177,7 @@ CREATE TABLE `{table}` (
 
 ```go
 type Entity struct {
-    Id        int64          `gorm:"primaryKey"`
+    Id        string         `gorm:"primaryKey;size:36"`  // UUID v7
     Name      string         `gorm:"size:50;not null"`
     CreatedAt time.Time
     UpdatedAt time.Time
