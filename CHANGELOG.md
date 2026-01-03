@@ -5,6 +5,28 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2026-01-03
+
+### Added
+
+- 新增通用库文档 `docs/common-library/`
+  - README.md - 总览
+  - errorx.md - 错误处理
+  - response.md - 响应格式
+  - middleware.md - 中间件
+  - validator.md - 参数校验
+  - telemetry.md - 遥测
+- 在 `constitution.md` 添加通用库规范章节
+- 在 `plan-template.md` 添加通用库使用指南
+- 在 `.cursorrules.tpl` 添加代码生成规范
+
+### Changed
+
+- 错误码分类更新: 系统/参数/业务/认证 (10000-49999)
+- 自定义错误码规则: 按功能模块分配 100 个
+
+---
+
 ## [0.4.0] - 2026-01-03
 
 ### Added

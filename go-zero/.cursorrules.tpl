@@ -98,16 +98,44 @@ func (h *UserHandler) Login(ctx context.Context, req *types.LoginReq) (*types.Lo
 ### 错误处理
 
 ```go
-// 使用 errors.Wrapf 包装错误
-if err != nil {
-    return nil, errors.Wrapf(err, "failed to get user by id: %d", userId)
+import "github.com/jinguoxing/idrm-go-base/errorx"
+
+// 使用预定义错误码
+if user == nil {
+    return nil, errorx.NewWithCode(errorx.ErrCodeNotFound)
 }
 
-// 业务错误使用自定义错误码
-if user == nil {
-    return nil, xerr.NewCodeError(xerr.UserNotFound, "用户不存在")
+// 自定义业务错误码 (在 internal/errorx/codes.go 定义)
+if user.Status == 0 {
+    return nil, errorx.New(30102, "用户已禁用")
 }
 ```
+
+---
+
+## 通用库规范 (idrm-go-base)
+
+### 必须使用
+
+| 场景 | 使用模块 | 禁止行为 |
+|------|----------|----------|
+| 错误处理 | `errorx` | ❌ 自定义 error struct |
+| HTTP 响应 | `response` | ❌ 自定义响应格式 |
+| API 中间件 | `middleware` | ❌ 重复实现认证/日志 |
+| 参数校验 | `validator` | ❌ 手写校验逻辑 |
+| 日志追踪 | `telemetry` | ❌ 直接使用 fmt/log |
+
+### Import 路径
+
+```go
+import "github.com/jinguoxing/idrm-go-base/{module}"
+```
+
+### 引入其他库规则
+
+如需使用通用库以外的第三方库：
+- **停止** 并询问：该库是否可以使用？
+- 等待确认后再继续
 
 ---
 

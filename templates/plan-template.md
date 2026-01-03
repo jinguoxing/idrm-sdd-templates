@@ -23,8 +23,41 @@
 | **Cache** | Redis 7.0 |
 | **ORM** | GORM / SQLx |
 | **Testing** | go test |
+| **Common Lib** | idrm-go-base v0.1.0+ |
 
 ---
+
+## 通用库 (idrm-go-base)
+
+**安装**:
+```bash
+go get github.com/jinguoxing/idrm-go-base@latest
+```
+
+### 模块初始化
+
+| 模块 | 初始化方式 |
+|------|-----------|
+| validator | `validator.Init()` 在 main.go |
+| telemetry | `telemetry.Init(cfg)` 在 main.go |
+| response | `httpx.SetErrorHandler(response.ErrorHandler)` |
+| middleware | `rest.WithMiddlewares(...)` |
+
+### 自定义错误码
+
+<!-- 根据功能模块规划错误码范围 -->
+
+| 功能 | 范围 | 位置 |
+|------|------|------|
+| {功能名} | 30x00-30x99 | `internal/errorx/codes.go` |
+
+### 第三方库确认
+
+> 如需使用通用库以外的第三方库，请在此列出并说明原因:
+
+| 库 | 原因 | 确认状态 |
+|----|------|----------|
+| - | - | ⏳ 待确认 |
 
 ## Go-Zero 开发流程
 
