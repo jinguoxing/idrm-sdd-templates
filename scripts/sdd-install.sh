@@ -171,6 +171,13 @@ install_templates() {
         cp "${MEMORY_DIR}/constitution.md" ".specify/memory/constitution.md"
         print_success "替换 .specify/memory/constitution.md"
     fi
+    
+    # 复制 workflows (场景化工作流)
+    if [ -d "${SCRIPT_DIR}/../.specify/workflows" ]; then
+        mkdir -p ".specify/workflows"
+        cp -r "${SCRIPT_DIR}/../.specify/workflows/"* ".specify/workflows/"
+        print_success "创建 .specify/workflows/ (场景化工作流)"
+    fi
 }
 
 # 初始化 Go-Zero 服务
@@ -224,6 +231,20 @@ init_go_zero_services() {
             "PROJECT_NAME" "$PROJECT_NAME" \
             "GO_MODULE" "$GO_MODULE"
         print_success "创建 CLAUDE.md"
+    fi
+    
+    # 复制 Cursor 命令
+    if [ -d "${GO_ZERO_DIR}/.cursor/commands" ]; then
+        mkdir -p ".cursor/commands"
+        cp -r "${GO_ZERO_DIR}/.cursor/commands/"* ".cursor/commands/"
+        print_success "创建 .cursor/commands/ (智能场景命令)"
+    fi
+    
+    # 复制 Claude 命令
+    if [ -d "${GO_ZERO_DIR}/.claude/commands" ]; then
+        mkdir -p ".claude/commands"
+        cp -r "${GO_ZERO_DIR}/.claude/commands/"* ".claude/commands/"
+        print_success "创建 .claude/commands/ (智能场景命令)"
     fi
     
     # 初始化各服务

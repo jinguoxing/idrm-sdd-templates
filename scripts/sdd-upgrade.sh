@@ -145,6 +145,32 @@ upgrade_templates() {
         rm -f "CLAUDE.md.bak"
         print_success "更新 CLAUDE.md"
     fi
+    
+    # 更新 workflows (场景化工作流)
+    if [ "$IS_REMOTE" = true ]; then
+        local workflows_dir="${TEMP_DIR}/.specify/workflows"
+    else
+        local workflows_dir="${SCRIPT_DIR}/../.specify/workflows"
+    fi
+    if [ -d "$workflows_dir" ]; then
+        mkdir -p ".specify/workflows"
+        cp -r "$workflows_dir/"* ".specify/workflows/"
+        print_success "更新 .specify/workflows/ (场景化工作流)"
+    fi
+    
+    # 更新 Cursor 命令
+    if [ -d "${GO_ZERO_DIR}/.cursor/commands" ]; then
+        mkdir -p ".cursor/commands"
+        cp -r "${GO_ZERO_DIR}/.cursor/commands/"* ".cursor/commands/"
+        print_success "更新 .cursor/commands/"
+    fi
+    
+    # 更新 Claude 命令
+    if [ -d "${GO_ZERO_DIR}/.claude/commands" ]; then
+        mkdir -p ".claude/commands"
+        cp -r "${GO_ZERO_DIR}/.claude/commands/"* ".claude/commands/"
+        print_success "更新 .claude/commands/"
+    fi
 }
 
 # 更新版本文件

@@ -5,6 +5,30 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.0] - 2026-01-03
+
+### Added
+
+- 新增场景化工作流功能
+  - `.specify/workflows/README.md` - 场景决策树
+  - `scenario-1-new.md` - 新功能开发 (5阶段)
+  - `scenario-2-update.md` - 小改动 (4步骤)
+  - `scenario-3-extend.md` - 功能扩展 (含 Delta 格式)
+  - `scenario-4-refactor.md` - 大规模重构
+- 新增智能场景命令 `/speckit.start`
+  - Cursor: `.cursor/commands/speckit.start.md`
+  - Claude: `.claude/commands/speckit.start.md`
+  - AI 自动判断场景类型
+- 采纳 Delta 思维 (ADDED/MODIFIED/REMOVED)
+  - 扩展和重构时标记变更类型
+
+### Changed
+
+- `sdd-install.sh` 自动复制 workflows 和 commands
+- `sdd-upgrade.sh` 自动更新 workflows 和 commands
+
+---
+
 ## [0.3.0] - 2026-01-03
 
 ### Added
