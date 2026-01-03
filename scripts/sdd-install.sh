@@ -208,6 +208,15 @@ init_go_zero_services() {
         print_success "创建 go.mod"
     fi
     
+    # 复制并处理 .cursorrules (Cursor AI 规则)
+    if [ -f "${GO_ZERO_DIR}/.cursorrules.tpl" ]; then
+        cp "${GO_ZERO_DIR}/.cursorrules.tpl" ".cursorrules"
+        replace_template_vars ".cursorrules" \
+            "PROJECT_NAME" "$PROJECT_NAME" \
+            "GO_MODULE" "$GO_MODULE"
+        print_success "创建 .cursorrules"
+    fi
+    
     # 初始化各服务
     for service in "${SELECTED_SERVICES[@]}"; do
         case $service in
