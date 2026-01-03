@@ -1,0 +1,186 @@
+# IDRM SDD Templates
+
+> **Spec-Driven Development Templates for Go-Zero Projects**
+
+[![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)](https://github.com/jinguoxing/idrm-sdd-templates)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+
+---
+
+## 📖 简介
+
+IDRM SDD Templates 是一套基于 [Spec Kit](https://github.com/anthropics/speckit) 的定制化模板，专为 **Go-Zero 微服务项目** 设计。
+
+### 特性
+
+- 🎯 **EARS 格式需求规格** - 清晰、可测试的需求表达
+- 🏗️ **Go-Zero 分层架构** - Handler → Logic → Model
+- 🔄 **双 ORM 支持** - GORM + SQLx 灵活切换
+- 📦 **多服务类型** - API / RPC / Job / Consumer
+- 🤖 **AI 工具集成** - 支持 Cursor 和 Claude Code
+- 📋 **质量门禁** - 内置检查清单和宪法约束
+
+---
+
+## 🚀 快速开始
+
+### 前置条件
+
+- [Node.js](https://nodejs.org/) >= 18
+- [Go](https://golang.org/) >= 1.21
+- [goctl](https://go-zero.dev/docs/goctl/goctl) (Go-Zero CLI)
+
+### 安装步骤
+
+```bash
+# Step 1: 使用 Spec Kit 官方初始化
+# 选择 Cursor
+npx @anthropic/speckit init --agent cursor
+
+# 或选择 Claude Code
+npx @anthropic/speckit init --agent claude
+
+# Step 2: 安装 IDRM SDD Template
+curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-install.sh | bash
+```
+
+### 交互式安装
+
+安装脚本会引导你完成以下配置：
+
+1. **选择服务类型** - API / RPC / Job / Consumer (可多选)
+2. **配置项目信息** - 项目名称、Go Module 路径
+3. **配置数据库** - MySQL 连接信息
+4. **确认并安装**
+
+---
+
+## 📁 安装后目录结构
+
+```
+my-project/
+├── .specify/                    # SDD 配置
+│   ├── templates/               # IDRM 定制模板
+│   │   ├── spec-template.md     # 需求规格模板 (EARS)
+│   │   ├── plan-template.md     # 技术计划模板
+│   │   ├── tasks-template.md    # 任务模板
+│   │   ├── api-template.api     # Go-Zero API 模板
+│   │   └── schema-template.sql  # DDL 模板
+│   └── memory/
+│       └── constitution.md      # IDRM 项目宪法
+│
+├── .cursor/commands/            # Cursor 命令 (官方)
+├── api/                         # API 服务
+│   ├── doc/
+│   │   ├── api.api              # API 入口
+│   │   └── base.api             # 基础类型
+│   └── etc/
+│       └── api.yaml             # 配置文件
+├── rpc/                         # RPC 服务 (可选)
+├── job/                         # Job 服务 (可选)
+├── consumer/                    # Consumer 服务 (可选)
+├── model/                       # Model 层
+├── migrations/                  # DDL 迁移
+├── Makefile                     # 常用命令
+└── go.mod
+```
+
+---
+
+## 🔧 常用命令
+
+```bash
+# 生成 API 代码
+make api
+
+# 生成 Swagger 文档
+make swagger
+
+# 一键生成 API + Swagger
+make gen
+
+# 运行服务
+make run
+
+# 代码检查
+make lint
+
+# 运行测试
+make test
+```
+
+---
+
+## 📝 开发流程
+
+### 5 阶段工作流
+
+```
+Phase 0: Context    → 理解规范，准备环境
+   ⚠️ STOP - 等待用户确认
+Phase 1: Specify    → 定义业务需求 (EARS 格式)
+   ⚠️ STOP - 等待用户确认
+Phase 2: Design     → 创建技术方案
+   ⚠️ STOP - 等待用户确认
+Phase 3: Tasks      → 拆分任务 (<50行)
+   ⚠️ STOP - 等待用户确认
+Phase 4: Implement  → 编码、测试、验证
+```
+
+### 使用 AI 工具
+
+```bash
+# Cursor 或 Claude Code 中输入:
+/speckit.specify "实现用户登录功能"
+
+# 后续命令:
+/speckit.plan      # 创建技术计划
+/speckit.tasks     # 生成任务列表
+/speckit.implement # 开始实现
+```
+
+---
+
+## 🔄 升级
+
+```bash
+# 检查更新
+curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-upgrade.sh | bash -- --check
+
+# 执行升级
+curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-upgrade.sh | bash
+```
+
+---
+
+## 📚 文档
+
+- [项目宪法](memory/constitution.md) - IDRM 项目核心约束
+- [模板说明](templates/README.md) - 各模板使用指南
+- [Go-Zero 指南](go-zero/README.md) - Go-Zero 开发指南
+
+---
+
+## 🤝 贡献
+
+欢迎提交 Issue 和 Pull Request！
+
+1. Fork 本仓库
+2. 创建特性分支 (`git checkout -b feature/amazing-feature`)
+3. 提交更改 (`git commit -m 'Add amazing feature'`)
+4. 推送分支 (`git push origin feature/amazing-feature`)
+5. 创建 Pull Request
+
+---
+
+## 📄 License
+
+[MIT License](LICENSE)
+
+---
+
+## 🔗 相关链接
+
+- [Spec Kit](https://github.com/anthropics/speckit) - 官方 Spec Kit
+- [Go-Zero](https://go-zero.dev/) - Go-Zero 框架
+- [IDRM 项目](https://github.com/jinguoxing) - IDRM 系列项目
