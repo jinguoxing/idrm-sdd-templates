@@ -27,7 +27,7 @@ IDRM SDD Templates 是一套基于 [Spec Kit](https://github.com/anthropics/spec
 ### 前置条件
 
 - [Node.js](https://nodejs.org/) >= 18
-- [Go](https://golang.org/) >= 1.21
+- [Go](https://golang.org/) >= 1.24
 - [goctl](https://go-zero.dev/docs/goctl/goctl) (Go-Zero CLI)
 
 ### 安装步骤

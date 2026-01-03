@@ -1,6 +1,6 @@
 #!/bin/bash
 # IDRM SDD Templates - Common Functions
-# Version: 0.1.0
+# Version: 0.2.0
 
 # 颜色定义
 RED='\033[0;31m'
@@ -98,8 +98,7 @@ replace_template_vars() {
         local value=$2
         shift 2
         
-        # 转义特殊字符
-        value=$(echo "$value" | sed 's/[&/\]/\\&/g')
+        # 使用 sed 替换变量
         sed -i.bak "s|{{${key}}}|${value}|g" "$temp_file"
         rm -f "${temp_file}.bak"
     done
@@ -153,26 +152,41 @@ get_remote_version() {
 
 # 比较版本号 (返回: 0=相等, 1=大于, 2=小于)
 compare_versions() {
-    local v1=$1
-    local v2=$2
+    local v1="$1"
+    local v2="$2"
     
     if [ "$v1" = "$v2" ]; then
         return 0
     fi
     
-    local v1_parts=(${v1//./ })
-    local v2_parts=(${v2//./ })
+    # 使用 cut 分割版本号，兼容 bash 和 zsh
+    local v1_major=$(echo "$v1" | cut -d. -f1)
+    local v1_minor=$(echo "$v1" | cut -d. -f2)
+    local v1_patch=$(echo "$v1" | cut -d. -f3)
     
-    for i in 0 1 2; do
-        local p1=${v1_parts[$i]:-0}
-        local p2=${v2_parts[$i]:-0}
-        
-        if [ "$p1" -gt "$p2" ]; then
-            return 1
-        elif [ "$p1" -lt "$p2" ]; then
-            return 2
-        fi
-    done
+    local v2_major=$(echo "$v2" | cut -d. -f1)
+    local v2_minor=$(echo "$v2" | cut -d. -f2)
+    local v2_patch=$(echo "$v2" | cut -d. -f3)
+    
+    # 设置默认值
+    v1_major=${v1_major:-0}
+    v1_minor=${v1_minor:-0}
+    v1_patch=${v1_patch:-0}
+    v2_major=${v2_major:-0}
+    v2_minor=${v2_minor:-0}
+    v2_patch=${v2_patch:-0}
+    
+    # 比较主版本
+    if [ "$v1_major" -gt "$v2_major" ]; then return 1; fi
+    if [ "$v1_major" -lt "$v2_major" ]; then return 2; fi
+    
+    # 比较次版本
+    if [ "$v1_minor" -gt "$v2_minor" ]; then return 1; fi
+    if [ "$v1_minor" -lt "$v2_minor" ]; then return 2; fi
+    
+    # 比较补丁版本
+    if [ "$v1_patch" -gt "$v2_patch" ]; then return 1; fi
+    if [ "$v1_patch" -lt "$v2_patch" ]; then return 2; fi
     
     return 0
 }

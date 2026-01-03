@@ -99,7 +99,7 @@ EARS = Easy Approach to Requirements Syntax
 ```markdown
 | 项目 | 选择 |
 |------|------|
-| 语言 | Go 1.21+ |
+| 语言 | Go 1.24+ |
 | 框架 | Go-Zero v1.9+ |
 | 数据库 | MySQL 8.0 |
 | ORM | GORM + SQLx |

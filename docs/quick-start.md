@@ -10,7 +10,7 @@
 
 ```bash
 # 检查 Go
-go version  # >= 1.21
+go version  # >= 1.24
 
 # 检查 goctl
 goctl --version  # Go-Zero CLI

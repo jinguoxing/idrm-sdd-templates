@@ -17,7 +17,7 @@
 
 | Item | Value |
 |------|-------|
-| **Language** | Go 1.21+ |
+| **Language** | Go 1.24+ |
 | **Framework** | Go-Zero v1.9+ |
 | **Storage** | MySQL 8.0 |
 | **Cache** | Redis 7.0 |
