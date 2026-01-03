@@ -80,8 +80,8 @@ show_changelog() {
             changelog_file="${SCRIPT_DIR}/../CHANGELOG.md"
         fi
         
-        # 只显示最新版本的变更
-        sed -n "/## \[${to_version}\]/,/## \[/p" "$changelog_file" | head -n -1
+        # 只显示最新版本的变更 (使用 sed 删除最后一行，兼容 macOS)
+        sed -n "/## \[${to_version}\]/,/## \[/p" "$changelog_file" | sed '$d'
         echo "-------------------------------------------"
     fi
 }
@@ -152,9 +152,11 @@ main() {
     print_info "当前版本: v${local_version}"
     print_info "最新版本: v${REMOTE_VERSION}"
     
-    # 比较版本
+    # 比较版本 (暂时禁用 set -e 以获取返回值)
+    set +e
     compare_versions "$local_version" "$REMOTE_VERSION"
     local result=$?
+    set -e
     
     case $result in
         0)
