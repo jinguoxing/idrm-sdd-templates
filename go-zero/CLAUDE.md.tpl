@@ -1,0 +1,151 @@
+# {{PROJECT_NAME}}
+
+基于 Go-Zero 微服务架构的项目，采用 AI 辅助的规范驱动开发 (SDD) 模式。
+
+## 技术栈
+
+- **语言**: Go 1.24+
+- **框架**: Go-Zero v1.9+
+- **数据库**: MySQL 8.0
+- **ORM**: GORM (复杂查询) + SQLx (高性能)
+- **架构**: 微服务 (API/RPC/Job/Consumer)
+
+## 项目结构
+
+```
+{{PROJECT_NAME}}/
+├── api/                      # API 服务
+│   ├── doc/                  # API 定义 (.api 文件)
+│   ├── etc/                  # 配置文件
+│   └── internal/             # 内部实现
+│       ├── handler/          # 请求处理 (参数校验)
+│       ├── logic/            # 业务逻辑
+│       ├── svc/              # 服务上下文
+│       └── types/            # 类型定义
+├── model/                    # 数据模型
+├── migrations/               # DDL 迁移
+├── specs/                    # SDD 规格文档
+├── deploy/                   # 部署配置
+└── .specify/                 # Spec Kit 配置
+```
+
+## 快速命令
+
+以下命令可直接使用:
+
+```bash
+# 开发
+make api           # 生成 API 代码
+make swagger       # 生成 Swagger 文档
+make run           # 运行服务
+make test          # 运行测试
+
+# 部署
+make docker-build  # 构建镜像
+make k8s-deploy    # 部署到 K8s
+```
+
+## SDD 工作流程
+
+本项目遵循 Spec-Driven Development 5 阶段工作流:
+
+1. **Context** - 阅读 `.specify/memory/constitution.md` 理解项目规范
+2. **Specify** - 使用 EARS 格式定义需求 → `specs/<feature>/spec.md`
+3. **Design** - 创建技术方案 → `specs/<feature>/plan.md`
+4. **Tasks** - 拆分任务 (每个 <50 行) → `specs/<feature>/tasks.md`
+5. **Implement** - 按任务顺序编码实现
+
+**重要**: 每个阶段完成后等待用户确认，再进入下一阶段。
+
+## 架构规范
+
+### 分层职责 (严格遵守)
+
+| 层 | 职责 | 禁止 |
+|---|------|------|
+| Handler | 参数绑定、校验、调用 Logic | 包含业务逻辑 |
+| Logic | 业务逻辑、事务管理 | 直接操作 HTTP |
+| Model | 数据访问 (GORM/SQLx) | 包含业务逻辑 |
+
+### API 设计
+
+- 入口文件: `api/doc/api.api`
+- 基础类型: `api/doc/base.api`
+- 模块 API: `api/doc/<module>/<module>.api`
+- 使用 `goctl api go` 生成代码
+
+## 编码约定
+
+### 命名规范
+
+```
+文件名: snake_case.go
+包名:   lowercase
+结构体: PascalCase
+方法:   PascalCase
+变量:   camelCase
+常量:   UPPER_SNAKE_CASE
+```
+
+### 错误处理
+
+```go
+// 使用 errors.Wrapf 包装错误
+if err != nil {
+    return errors.Wrapf(err, "failed to get user: %d", userId)
+}
+```
+
+### 日志规范
+
+```go
+// 使用 logx，包含 traceId
+logx.WithContext(ctx).Infof("user login: %s", phone)
+```
+
+## 重要约束
+
+### 必须
+
+- ✅ Handler 使用 validator 校验参数
+- ✅ Logic 层管理事务边界
+- ✅ 使用配置文件管理环境变量
+- ✅ 错误信息使用 errors.Wrapf 包装
+
+### 禁止
+
+- ❌ Handler 直接操作数据库
+- ❌ Model 层包含业务判断
+- ❌ 硬编码配置值
+- ❌ 使用 fmt.Println 替代 logx
+
+## 相关文档
+
+- 项目宪法: `.specify/memory/constitution.md`
+- SDD 模板: `.specify/templates/`
+- Spec Kit 命令: `.cursor/commands/` 或 `.claude/commands/`
+
+## 常见操作
+
+### 新增 API 接口
+
+1. 在 `api/doc/<module>/` 创建 `.api` 文件
+2. 运行 `make api` 生成代码
+3. 在 `api/internal/logic/` 实现业务逻辑
+4. 运行 `make swagger` 更新文档
+
+### 新增数据表
+
+1. 在 `migrations/` 创建 DDL 文件
+2. 执行 DDL 创建表
+3. 使用 goctl 生成 Model 或手写 GORM Model
+4. 在 Logic 层调用 Model
+
+### 部署服务
+
+```bash
+make docker-build    # 构建镜像
+make docker-push     # 推送镜像
+make k8s-deploy      # 部署到 K8s
+make k8s-status      # 查看状态
+```

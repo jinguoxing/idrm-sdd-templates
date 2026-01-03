@@ -217,6 +217,15 @@ init_go_zero_services() {
         print_success "创建 .cursorrules"
     fi
     
+    # 复制并处理 CLAUDE.md (Claude Code 配置)
+    if [ -f "${GO_ZERO_DIR}/CLAUDE.md.tpl" ]; then
+        cp "${GO_ZERO_DIR}/CLAUDE.md.tpl" "CLAUDE.md"
+        replace_template_vars "CLAUDE.md" \
+            "PROJECT_NAME" "$PROJECT_NAME" \
+            "GO_MODULE" "$GO_MODULE"
+        print_success "创建 CLAUDE.md"
+    fi
+    
     # 初始化各服务
     for service in "${SELECTED_SERVICES[@]}"; do
         case $service in
