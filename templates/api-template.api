@@ -28,7 +28,7 @@ type (
     prefix: /api/v1
     group: {{feature_group}}
 )
-service idrm-api {
+service {{PROJECT_NAME}}-api {
     // @handler ListXxx
     // get /xxx (ListXxxReq) returns (PageResp)
     

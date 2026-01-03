@@ -80,12 +80,12 @@ go-zero/
 ### api.yaml
 
 ```yaml
-Name: project-api          # 服务名称
+Name: {{PROJECT_NAME}}-api # 服务名称 (会被替换)
 Host: 0.0.0.0              # 监听地址
 Port: 8888                 # 监听端口
 
 Telemetry:                 # 可观测性配置
-  ServiceName: project-api
+  ServiceName: {{PROJECT_NAME}}-api
   Log:
     Level: info
     Mode: file
@@ -107,14 +107,14 @@ Auth:                      # 认证配置
 ### rpc.yaml
 
 ```yaml
-Name: project-rpc
+Name: {{PROJECT_NAME}}-rpc
 Host: 0.0.0.0
 Port: 9999
 
 Etcd:                      # 服务注册
   Hosts:
     - 127.0.0.1:2379
-  Key: project.rpc
+  Key: {{PROJECT_NAME}}.rpc
 ```
 
 ---

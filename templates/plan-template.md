@@ -211,7 +211,7 @@ type (
     prefix: /api/v1/{module}
     group: {feature}
 )
-service project-api {
+service {{PROJECT_NAME}}-api {
     @handler CreateXxx
     post /{feature} (CreateXxxReq) returns (CreateXxxResp)
 }
