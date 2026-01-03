@@ -19,6 +19,8 @@ IDRM SDD Templates 是一套基于 [Spec Kit](https://github.com/anthropics/spec
 - 📦 **多服务类型** - API / RPC / Job / Consumer
 - 🤖 **AI 工具集成** - 支持 Cursor 和 Claude Code
 - 📋 **质量门禁** - 内置检查清单和宪法约束
+- 🎭 **场景化工作流** - 4 种场景智能匹配 (新功能/小改动/扩展/重构)
+- 📝 **Delta 格式** - 变更追踪 (ADDED/MODIFIED/REMOVED)
 
 ---
 
@@ -67,10 +69,21 @@ my-project/
 │   │   ├── tasks-template.md    # 任务模板
 │   │   ├── api-template.api     # Go-Zero API 模板
 │   │   └── schema-template.sql  # DDL 模板
+│   ├── workflows/               # 场景化工作流 [NEW]
+│   │   ├── README.md            # 场景决策树
+│   │   ├── scenario-1-new.md    # 新功能 (5阶段)
+│   │   ├── scenario-2-update.md # 小改动 (4步骤)
+│   │   ├── scenario-3-extend.md # 扩展 (Delta格式)
+│   │   └── scenario-4-refactor.md # 重构
 │   └── memory/
 │       └── constitution.md      # IDRM 项目宪法
 │
-├── .cursor/commands/            # Cursor 命令 (官方)
+├── .cursor/commands/            # Cursor 命令
+│   ├── speckit.start.md         # 智能场景启动 [NEW]
+│   └── speckit.*.md             # 官方命令
+├── .claude/commands/            # Claude 命令
+│   ├── speckit.start.md         # 智能场景启动 [NEW]
+│   └── speckit.*.md             # 官方命令
 ├── api/                         # API 服务
 │   ├── doc/
 │   │   ├── api.api              # API 入口
@@ -114,27 +127,31 @@ make test
 
 ## 📝 开发流程
 
-### 5 阶段工作流
+### 场景化智能命令 (v0.4.0+)
 
-```
-Phase 0: Context    → 理解规范，准备环境
-   ⚠️ STOP - 等待用户确认
-Phase 1: Specify    → 定义业务需求 (EARS 格式)
-   ⚠️ STOP - 等待用户确认
-Phase 2: Design     → 创建技术方案
-   ⚠️ STOP - 等待用户确认
-Phase 3: Tasks      → 拆分任务 (<50行)
-   ⚠️ STOP - 等待用户确认
-Phase 4: Implement  → 编码、测试、验证
-```
-
-### 使用 AI 工具
+使用 `/speckit.start` 命令，AI 自动判断并匹配合适的开发场景：
 
 ```bash
 # Cursor 或 Claude Code 中输入:
-/speckit.specify "实现用户登录功能"
+/speckit.start 实现用户认证功能      # → 场景一: 新功能
+/speckit.start 修复登录超时问题      # → 场景二: 小改动
+/speckit.start 添加密码重置功能      # → 场景三: 扩展
+/speckit.start 将JWT改为OAuth2      # → 场景四: 重构
+```
 
-# 后续命令:
+### 4 种开发场景
+
+| 场景 | 适用条件 | 工作流 |
+|------|----------|--------|
+| 🆕 新功能 | specs/{feature}/ 不存在 | 5阶段完整流程 |
+| 🔧 小改动 | 已有spec, <50行 | 4步快速流程 |
+| ➕ 扩展 | 添加子功能 | 增量+Delta格式 |
+| 🔄 重构 | 破坏性变更 | 6步迁移流程 |
+
+### 传统命令 (仍可用)
+
+```bash
+/speckit.specify   # 定义需求
 /speckit.plan      # 创建技术计划
 /speckit.tasks     # 生成任务列表
 /speckit.implement # 开始实现
@@ -156,6 +173,7 @@ curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/s
 
 ## 📚 文档
 
+- [场景工作流](.specify/workflows/README.md) - 4 种开发场景决策树
 - [项目宪法](memory/constitution.md) - IDRM 项目核心约束
 - [模板说明](templates/README.md) - 各模板使用指南
 - [Go-Zero 指南](go-zero/README.md) - Go-Zero 开发指南
@@ -182,6 +200,6 @@ curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/s
 
 ## 🔗 相关链接
 
-- [Spec Kit](https://github.com/anthropics/speckit) - 官方 Spec Kit
+- [GitHub Spec Kit](https://github.com/github/spec-kit) - 官方 Spec Kit
 - [Go-Zero](https://go-zero.dev/) - Go-Zero 框架
 - [IDRM 项目](https://github.com/jinguoxing) - IDRM 系列项目
