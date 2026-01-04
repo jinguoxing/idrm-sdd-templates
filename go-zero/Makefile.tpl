@@ -8,8 +8,8 @@ DOCKER_REGISTRY := {{DOCKER_REGISTRY}}
 DOCKER_IMAGE := $(DOCKER_REGISTRY)/$(PROJECT_NAME)
 VERSION := $(shell cat VERSION 2>/dev/null || echo "0.1.0")
 
-# Swagger 文档输出目录 (与 API 定义文件放在一起)
-SWAGGER_DIR := api/doc
+# Swagger 文档输出目录
+SWAGGER_DIR := api/doc/swagger
 
 # 初始化项目
 init:
@@ -66,9 +66,9 @@ deps:
 # Docker 命令
 # ============================================
 
-# 构建 Docker 镜像
+# 构建 Docker 镜像 (使用 build.sh 脚本)
 docker-build:
-	docker build -t $(DOCKER_IMAGE):$(VERSION) -t $(DOCKER_IMAGE):latest -f deploy/docker/Dockerfile .
+	@cd deploy/docker && ./build.sh $(VERSION)
 
 # 运行 Docker 容器
 docker-run:

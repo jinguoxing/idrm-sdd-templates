@@ -40,6 +40,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - 运行时配置 (Host、Port、环境) 支持环境变量覆盖
   - 新增 `docs/env-variables.md` 环境变量完整参考
   - K8s ConfigMap 存储非敏感配置，Secret 存储敏感信息
+- **Swagger 自动生成**
+  - 安装 API 服务时自动运行 `goctl api swagger`
+  - Swagger 文档输出到 `api/doc/swagger/` 目录
+- **分离的 Dockerfile 模板**
+  - `Dockerfile.api.tpl` - API 服务专用
+  - `Dockerfile.rpc.tpl` - RPC 服务专用
+  - `Dockerfile.job.tpl` - Job 服务专用
+  - `Dockerfile.consumer.tpl` - Consumer 服务专用
+  - `build.sh.tpl` - 通用构建脚本
 
 ### Changed
 

@@ -489,10 +489,22 @@ init_deploy_files() {
     # 创建部署目录
     mkdir -p deploy/docker deploy/k8s/base deploy/k8s/overlays/dev deploy/k8s/overlays/prod
     
-    # 复制 Dockerfile
-    if [ -f "${GO_ZERO_DIR}/deploy/docker/Dockerfile.tpl" ]; then
-        cp "${GO_ZERO_DIR}/deploy/docker/Dockerfile.tpl" "deploy/docker/Dockerfile"
-        print_success "安装 deploy/docker/Dockerfile"
+    # 根据选择的服务类型复制对应的 Dockerfile
+    for service in "${SELECTED_SERVICES[@]}"; do
+        if [ -f "${GO_ZERO_DIR}/deploy/docker/Dockerfile.${service}.tpl" ]; then
+            cp "${GO_ZERO_DIR}/deploy/docker/Dockerfile.${service}.tpl" "deploy/docker/Dockerfile.${service}"
+            print_success "安装 deploy/docker/Dockerfile.${service}"
+        fi
+    done
+    
+    # 复制构建脚本
+    if [ -f "${GO_ZERO_DIR}/deploy/docker/build.sh.tpl" ]; then
+        cp "${GO_ZERO_DIR}/deploy/docker/build.sh.tpl" "deploy/docker/build.sh"
+        replace_template_vars "deploy/docker/build.sh" \
+            "PROJECT_NAME" "$PROJECT_NAME" \
+            "DOCKER_REGISTRY" "$DOCKER_REGISTRY"
+        chmod +x "deploy/docker/build.sh"
+        print_success "安装 deploy/docker/build.sh"
     fi
     
     # 复制 docker-compose.yaml
@@ -591,7 +603,7 @@ init_go_zero_services() {
 init_api_service() {
     local access_secret=$1
     
-    mkdir -p api/doc api/etc api/internal/svc
+    mkdir -p api/doc/swagger api/etc api/internal/svc
     
     # 复制 api.api
     if [ -f "${GO_ZERO_DIR}/api/doc/api.api.tpl" ]; then
@@ -619,6 +631,18 @@ init_api_service() {
             "DB_PASSWORD" "$DB_PASSWORD" \
             "ACCESS_SECRET" "$access_secret"
         print_success "安装 api/etc/api.yaml"
+    fi
+    
+    # 生成 Swagger 文档
+    if command -v goctl &> /dev/null && [ -f "api/doc/api.api" ]; then
+        print_info "生成 Swagger 文档..."
+        if goctl api swagger --api api/doc/api.api --dir api/doc/swagger --filename swagger 2>/dev/null; then
+            print_success "生成 api/doc/swagger/swagger.json"
+        else
+            print_warning "Swagger 生成失败，请稍后运行: make swagger"
+        fi
+    else
+        print_info "goctl 未安装，跳过 Swagger 生成。请稍后运行: make swagger"
     fi
 }
 
