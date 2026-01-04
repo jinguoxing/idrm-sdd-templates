@@ -36,6 +36,12 @@
    - spec.md 使用 EARS 格式 (WHEN...THE SYSTEM SHALL)
    - plan.md 包含 API/DDL/Model 设计
 
+5. **测试先行 (Test-First) 🧪**
+   - ❌ 没有测试的代码不允许提交
+   - ✅ 实现代码必须同时编写测试用例
+   - ✅ 测试覆盖率 > 80%
+   - ✅ 使用 `[TEST]` 标记测试任务
+
 ### 例外情况
 
 以下请求可以直接处理，无需 SDD 流程：
