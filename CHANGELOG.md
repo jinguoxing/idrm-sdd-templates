@@ -32,7 +32,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- 无
+- 修复 `sdd-install.sh` 无法通过 `curl | bash` 远程执行的问题
+- 改为自包含单文件模式，移除对 `lib/common.sh` 的外部依赖
+- 支持非交互模式 (管道执行时自动使用默认值)
 
 ---
 
