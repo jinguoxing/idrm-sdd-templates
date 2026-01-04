@@ -52,8 +52,10 @@ curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/s
 如需选择服务类型和配置数据库，需要**先下载脚本再运行**：
 
 ```bash
-# 下载脚本后交互运行
+# 下载脚本
 curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-install.sh -o /tmp/sdd-install.sh
+
+# 交互运行
 bash /tmp/sdd-install.sh
 ```
 
@@ -180,10 +182,12 @@ make test
 
 ```bash
 # 检查更新
-curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-upgrade.sh | bash -s -- --check
+curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-upgrade.sh -o /tmp/sdd-upgrade.sh
+bash /tmp/sdd-upgrade.sh --check
 
 # 执行升级
-curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-upgrade.sh | bash
+curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-upgrade.sh -o /tmp/sdd-upgrade.sh
+bash /tmp/sdd-upgrade.sh
 ```
 
 ---
