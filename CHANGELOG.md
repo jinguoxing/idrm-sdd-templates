@@ -9,15 +9,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
-- 待添加...
+- 新增 Kubernetes Kustomize 部署模板 `deploy/k8s/`
+  - **Base 层** (`deploy/k8s/base/`)
+    - `deployment.yaml.tpl` - Deployment 配置
+    - `service.yaml.tpl` - Service 配置
+    - `configmap.yaml.tpl` - ConfigMap 配置
+    - `secret.yaml.tpl` - Secret 配置
+    - `ingress.yaml.tpl` - Ingress 配置
+    - `hpa.yaml.tpl` - HorizontalPodAutoscaler 配置
+    - `pdb.yaml.tpl` - PodDisruptionBudget 配置
+    - `kustomization.yaml.tpl` - Kustomize 入口
+  - **Overlays 层** (`deploy/k8s/overlays/`)
+    - `dev/` - 开发环境配置
+    - `prod/` - 生产环境配置
+- 支持多环境部署 (dev/prod)
+- 支持 HPA 自动扩缩容
+- 支持 PDB 确保高可用
 
 ### Changed
 
-- 待添加...
+- K8S 部署从单文件改为 Kustomize 分层结构
 
 ### Fixed
 
-- 待添加...
+- 无
 
 ---
 
