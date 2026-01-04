@@ -633,6 +633,14 @@ init_api_service() {
         print_success "安装 api/etc/api.yaml"
     fi
     
+    # 复制 api.go 入口文件模板
+    if [ -f "${GO_ZERO_DIR}/api/api.go.tpl" ]; then
+        cp "${GO_ZERO_DIR}/api/api.go.tpl" "api/api.go"
+        replace_template_vars "api/api.go" \
+            "GO_MODULE" "$GO_MODULE"
+        print_success "安装 api/api.go (入口文件)"
+    fi
+    
     # 生成 Swagger 文档
     if command -v goctl &> /dev/null && [ -f "api/doc/api.api" ]; then
         print_info "生成 Swagger 文档..."
