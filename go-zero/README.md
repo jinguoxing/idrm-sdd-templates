@@ -35,9 +35,18 @@ go-zero/
     │   ├── Dockerfile.tpl      # Docker 镜像构建
     │   └── docker-compose.yaml.tpl
     └── k8s/
-        ├── deployment.yaml.tpl
-        ├── service.yaml.tpl
-        └── configmap.yaml.tpl
+        ├── base/                  # 基础资源 (Kustomize Base)
+        │   ├── deployment.yaml.tpl
+        │   ├── service.yaml.tpl
+        │   ├── configmap.yaml.tpl
+        │   ├── secret.yaml.tpl    # [新增] Secret
+        │   ├── hpa.yaml.tpl       # [新增] HPA
+        │   ├── ingress.yaml.tpl   # [新增] Ingress
+        │   ├── pdb.yaml.tpl       # [新增] PDB
+        │   └── kustomization.yaml.tpl
+        └── overlays/              # 环境差异化配置
+            ├── dev/
+            └── prod/
 ```
 
 ---
@@ -196,8 +205,10 @@ make build
 # Docker 构建
 make docker-build
 
-# K8s 部署
-make k8s-deploy
+# K8s 部署 (使用 Kustomize)
+make k8s-deploy-dev     # 部署开发环境
+make k8s-deploy-prod    # 部署生产环境
+make k8s-status         # 查看状态
 ```
 
 ---

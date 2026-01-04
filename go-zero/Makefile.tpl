@@ -88,16 +88,32 @@ docker-push:
 # ============================================
 
 # 部署到 K8s
+# 默认环境
+ENV ?= dev
+
+# 部署到 K8s (默认 dev)
 k8s-deploy:
-	kubectl apply -f deploy/k8s/
+	kubectl apply -k deploy/k8s/overlays/$(ENV)
+
+# 部署到 K8s (Dev)
+k8s-deploy-dev:
+	kubectl apply -k deploy/k8s/overlays/dev
+
+# 部署到 K8s (Prod)
+k8s-deploy-prod:
+	kubectl apply -k deploy/k8s/overlays/prod
+
+# 查看 K8s 生成的 Manifest (Dry-run)
+k8s-manifest:
+	kubectl kustomize deploy/k8s/overlays/$(ENV)
 
 # 删除 K8s 部署
 k8s-delete:
-	kubectl delete -f deploy/k8s/
+	kubectl delete -k deploy/k8s/overlays/$(ENV)
 
 # 查看 K8s 状态
 k8s-status:
-	kubectl get pods,svc,deploy -l app=$(PROJECT_NAME)
+	kubectl get pods,svc,deploy,ing -l app=$(PROJECT_NAME)
 
 # 帮助
 help:
@@ -123,7 +139,10 @@ help:
 	@echo "    make docker-stop   - Stop Docker container"
 	@echo "    make docker-push   - Push Docker image to registry"
 	@echo ""
-	@echo "  Kubernetes:"
-	@echo "    make k8s-deploy    - Deploy to Kubernetes"
-	@echo "    make k8s-delete    - Delete Kubernetes deployment"
-	@echo "    make k8s-status    - Check Kubernetes status"
+	@echo "  Kubernetes (Kustomize):"
+	@echo "    make k8s-deploy      - Deploy to K8s (default: dev)"
+	@echo "    make k8s-deploy-dev  - Deploy to K8s Dev environment"
+	@echo "    make k8s-deploy-prod - Deploy to K8s Prod environment"
+	@echo "    make k8s-manifest    - View generated manifest (dry-run)"
+	@echo "    make k8s-delete      - Delete K8s deployment"
+	@echo "    make k8s-status      - Check K8s status"
