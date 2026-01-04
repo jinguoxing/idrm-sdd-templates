@@ -56,6 +56,15 @@ curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/s
 3. **配置数据库** - MySQL 连接信息
 4. **确认并安装**
 
+### 非交互式安装
+
+通过管道执行时自动进入非交互模式（适用于 CI/CD）：
+
+```bash
+# 仅安装模板，使用默认配置
+curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-install.sh | bash
+```
+
 ---
 
 ## 📁 安装后目录结构

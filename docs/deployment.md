@@ -21,10 +21,21 @@ deploy/
 ├── docker/
 │   ├── Dockerfile           # 多阶段构建
 │   └── docker-compose.yaml  # 服务编排
-└── k8s/
-    ├── deployment.yaml
-    ├── service.yaml
-    └── configmap.yaml
+└── k8s/                      # Kustomize 结构
+    ├── base/                 # 基础配置
+    │   ├── deployment.yaml
+    │   ├── service.yaml
+    │   ├── configmap.yaml
+    │   ├── secret.yaml
+    │   ├── ingress.yaml
+    │   ├── hpa.yaml
+    │   ├── pdb.yaml
+    │   └── kustomization.yaml
+    └── overlays/             # 环境覆盖
+        ├── dev/
+        │   └── kustomization.yaml
+        └── prod/
+            └── kustomization.yaml
 ```
 
 ### 快速启动
@@ -107,17 +118,36 @@ make k8s-status
 make k8s-delete
 ```
 
-### 分步部署
+### Kustomize 部署 (推荐)
 
 ```bash
-# 1. 创建 ConfigMap
-kubectl apply -f deploy/k8s/configmap.yaml
+# 部署开发环境
+kubectl apply -k deploy/k8s/overlays/dev
+
+# 部署生产环境
+kubectl apply -k deploy/k8s/overlays/prod
+
+# 预览生成的配置
+kubectl kustomize deploy/k8s/overlays/dev
+```
+
+### 分步部署 (传统方式)
+
+```bash
+# 1. 创建 ConfigMap 和 Secret
+kubectl apply -f deploy/k8s/base/configmap.yaml
+kubectl apply -f deploy/k8s/base/secret.yaml
 
 # 2. 创建 Deployment
-kubectl apply -f deploy/k8s/deployment.yaml
+kubectl apply -f deploy/k8s/base/deployment.yaml
 
-# 3. 创建 Service
-kubectl apply -f deploy/k8s/service.yaml
+# 3. 创建 Service 和 Ingress
+kubectl apply -f deploy/k8s/base/service.yaml
+kubectl apply -f deploy/k8s/base/ingress.yaml
+
+# 4. (可选) 创建 HPA 和 PDB
+kubectl apply -f deploy/k8s/base/hpa.yaml
+kubectl apply -f deploy/k8s/base/pdb.yaml
 ```
 
 ### 资源配置说明
@@ -162,7 +192,46 @@ livenessProbe:
 | ClusterIP | 8888 | 集群内访问 |
 | NodePort | 30888 | 节点端口访问 |
 
-### 扩缩容
+### HPA 自动扩缩容
+
+```yaml
+# deploy/k8s/base/hpa.yaml
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: <project>-api-hpa
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: <project>-api
+  minReplicas: 2
+  maxReplicas: 10
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: 80
+```
+
+### PDB 高可用保障
+
+```yaml
+# deploy/k8s/base/pdb.yaml
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: <project>-api-pdb
+spec:
+  minAvailable: 1
+  selector:
+    matchLabels:
+      app: <project>-api
+```
+
+### 手动扩缩容
 
 ```bash
 # 扩展到 3 副本

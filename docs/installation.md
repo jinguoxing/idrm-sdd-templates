@@ -61,8 +61,8 @@ curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/s
 ### 方式 2: 指定版本安装
 
 ```bash
-# 安装 v0.2.0
-curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/v0.2.0/scripts/sdd-install.sh | bash
+# 安装 v0.6.0
+curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/v0.6.0/scripts/sdd-install.sh | bash
 ```
 
 ### 方式 3: 本地安装
@@ -71,6 +71,18 @@ curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/v0.2.0
 git clone https://github.com/jinguoxing/idrm-sdd-templates.git /tmp/idrm-sdd
 /tmp/idrm-sdd/scripts/sdd-install.sh
 ```
+
+---
+
+## 非交互式安装
+
+当通过 `curl | bash` 执行时，脚本会自动进入非交互模式：
+
+- 自动跳过服务类型选择 (仅安装模板)
+- 使用当前目录名作为项目名称
+- 使用默认 Go Module 路径
+
+这使得脚本可以在 CI/CD 或自动化脚本中使用。
 
 ---
 
@@ -129,10 +141,19 @@ my-project/
 │   ├── docker/
 │   │   ├── Dockerfile
 │   │   └── docker-compose.yaml
-│   └── k8s/
-│       ├── deployment.yaml
-│       ├── service.yaml
-│       └── configmap.yaml
+│   └── k8s/                  # Kustomize 结构
+│       ├── base/             # 基础配置
+│       │   ├── deployment.yaml
+│       │   ├── service.yaml
+│       │   ├── configmap.yaml
+│       │   ├── secret.yaml
+│       │   ├── ingress.yaml
+│       │   ├── hpa.yaml
+│       │   ├── pdb.yaml
+│       │   └── kustomization.yaml
+│       └── overlays/         # 环境覆盖
+│           ├── dev/
+│           └── prod/
 ├── model/                    # Model 层
 ├── migrations/               # DDL 迁移
 ├── Makefile                  # 常用命令
