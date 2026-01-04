@@ -30,6 +30,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Cursor 环境: 仅安装 `.cursor/commands/` + `.cursorrules`
   - Claude 环境: 仅安装 `.claude/commands/` + `CLAUDE.md`
   - 双环境: 安装所有 AI 工具文件
+- **强制 SDD 工作流说明** (CLAUDE.md + .cursorrules)
+  - AI 必须通过 `/speckit.start` 或 `/speckit.specify` 启动功能开发
+  - 禁止跳过 SDD 阶段直接编码
+  - specs 文件必须使用 `.specify/templates/` 中的模板
 
 ### Changed
 
