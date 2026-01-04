@@ -2,8 +2,15 @@ apiVersion: v1
 kind: Secret
 metadata:
   name: {{PROJECT_NAME}}-secret
+  labels:
+    app: {{PROJECT_NAME}}
 type: Opaque
 stringData:
-  # Base64 encoding is handled by Kustomize or K8s
-  db-password: "{{DB_PASSWORD}}"
-  access-secret: "{{ACCESS_SECRET}}"
+  # 数据库敏感信息
+  DB_PASSWORD: "{{DB_PASSWORD}}"
+  
+  # 认证密钥
+  ACCESS_SECRET: "{{ACCESS_SECRET}}"
+  
+  # Redis 密码 (如果使用)
+  REDIS_PASSWORD: ""

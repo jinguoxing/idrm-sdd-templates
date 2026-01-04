@@ -24,6 +24,13 @@ spec:
           ports:
             - containerPort: 8888
               protocol: TCP
+          envFrom:
+            # 从 ConfigMap 加载非敏感配置
+            - configMapRef:
+                name: {{PROJECT_NAME}}-config
+            # 从 Secret 加载敏感配置
+            - secretRef:
+                name: {{PROJECT_NAME}}-secret
           env:
             - name: TZ
               value: "Asia/Shanghai"
@@ -46,10 +53,3 @@ spec:
               port: 8888
             initialDelaySeconds: 15
             periodSeconds: 20
-          volumeMounts:
-            - name: config-volume
-              mountPath: /app/etc
-      volumes:
-        - name: config-volume
-          configMap:
-            name: {{PROJECT_NAME}}-config

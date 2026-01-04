@@ -34,6 +34,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - AI 必须通过 `/speckit.start` 或 `/speckit.specify` 启动功能开发
   - 禁止跳过 SDD 阶段直接编码
   - specs 文件必须使用 `.specify/templates/` 中的模板
+- **环境变量配置支持** (混合模式)
+  - 配置文件支持 `${VAR:-default}` 语法读取环境变量
+  - 敏感信息 (密码、密钥) 通过环境变量注入
+  - 运行时配置 (Host、Port、环境) 支持环境变量覆盖
+  - 新增 `docs/env-variables.md` 环境变量完整参考
+  - K8s ConfigMap 存储非敏感配置，Secret 存储敏感信息
 
 ### Changed
 

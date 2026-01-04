@@ -5,35 +5,23 @@ metadata:
   labels:
     app: {{PROJECT_NAME}}
 data:
-  api.yaml: |
-    Name: {{PROJECT_NAME}}-api
-    Host: 0.0.0.0
-    Port: 8888
-
-    Telemetry:
-      ServiceName: {{PROJECT_NAME}}-api
-      ServiceVersion: 1.0.0
-      Environment: production
-      
-      Log:
-        Level: info
-        Mode: console
-        KeepDays: 7
-
-    DB:
-      Default:
-        Host: {{DB_HOST}}
-        Port: {{DB_PORT}}
-        Database: {{DB_NAME}}
-        Username: {{DB_USER}}
-        Password: {{DB_PASSWORD}}
-        Charset: utf8mb4
-        MaxIdleConns: 10
-        MaxOpenConns: 100
-        ConnMaxLifetime: 3600
-        LogLevel: warn
-        SlowThreshold: 200
-
-    Auth:
-      AccessSecret: {{ACCESS_SECRET}}
-      AccessExpire: 7200
+  # 非敏感环境变量配置
+  ENVIRONMENT: "production"
+  LOG_LEVEL: "info"
+  LOG_MODE: "console"
+  
+  # 数据库配置 (非敏感)
+  DB_HOST: "{{DB_HOST}}"
+  DB_PORT: "{{DB_PORT}}"
+  DB_NAME: "{{DB_NAME}}"
+  DB_USER: "{{DB_USER}}"
+  DB_MAX_IDLE_CONNS: "10"
+  DB_MAX_OPEN_CONNS: "100"
+  DB_LOG_LEVEL: "warn"
+  
+  # 服务端口
+  API_PORT: "8888"
+  RPC_PORT: "9999"
+  
+  # 认证配置 (非敏感)
+  ACCESS_EXPIRE: "7200"
