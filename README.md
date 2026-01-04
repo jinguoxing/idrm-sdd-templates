@@ -2,7 +2,7 @@
 
 > **Spec-Driven Development Templates for Go-Zero Projects**
 
-[![Version](https://img.shields.io/badge/version-0.5.0-blue.svg)](https://github.com/jinguoxing/idrm-sdd-templates)
+[![Version](https://img.shields.io/badge/version-0.6.0-blue.svg)](https://github.com/jinguoxing/idrm-sdd-templates)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ---
