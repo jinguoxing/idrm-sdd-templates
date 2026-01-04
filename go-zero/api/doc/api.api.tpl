@@ -11,6 +11,21 @@ import "base.api"
 
 // ============================================
 // 在此处引入各模块 API 文件
+// 示例: import "user/user.api"
 // ============================================
-// import "module1/module1.api"
-// import "module2/module2.api"
+
+// 定义 service 名称为 "api"
+// goctl 会生成: api.go + etc/api.yaml
+@server (
+    prefix: /api/v1
+)
+service api {
+    // 健康检查 (示例)
+    @handler HealthCheck
+    get /health returns (HealthResp)
+}
+
+// 健康检查响应
+type HealthResp {
+    Status string `json:"status"`
+}
