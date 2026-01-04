@@ -229,6 +229,9 @@ DB_NAME="idrm"
 # 是否为非交互模式
 NON_INTERACTIVE=false
 
+# 检测到的 AI 工具 (cursor/claude/both)
+DETECTED_AI_TOOL=""
+
 # ============================================================================
 # 主要函数
 # ============================================================================
@@ -409,37 +412,71 @@ install_ai_commands() {
     echo ""
     echo "  [AI 工具命令]"
     
-    # 复制 Cursor 命令
-    if [ -d "${GO_ZERO_DIR}/.cursor/commands" ]; then
-        mkdir -p ".cursor/commands"
-        cp -r "${GO_ZERO_DIR}/.cursor/commands/"* ".cursor/commands/" 2>/dev/null || true
-        print_success "安装 .cursor/commands/ (智能场景命令)"
-    fi
-    
-    # 复制 Claude 命令
-    if [ -d "${GO_ZERO_DIR}/.claude/commands" ]; then
-        mkdir -p ".claude/commands"
-        cp -r "${GO_ZERO_DIR}/.claude/commands/"* ".claude/commands/" 2>/dev/null || true
-        print_success "安装 .claude/commands/ (智能场景命令)"
-    fi
-    
-    # 复制 CLAUDE.md
-    if [ -f "${GO_ZERO_DIR}/CLAUDE.md.tpl" ]; then
-        cp "${GO_ZERO_DIR}/CLAUDE.md.tpl" "CLAUDE.md"
-        replace_template_vars "CLAUDE.md" \
-            "PROJECT_NAME" "$PROJECT_NAME" \
-            "GO_MODULE" "$GO_MODULE"
-        print_success "安装 CLAUDE.md"
-    fi
-    
-    # 复制 .cursorrules
-    if [ -f "${GO_ZERO_DIR}/.cursorrules.tpl" ]; then
-        cp "${GO_ZERO_DIR}/.cursorrules.tpl" ".cursorrules"
-        replace_template_vars ".cursorrules" \
-            "PROJECT_NAME" "$PROJECT_NAME" \
-            "GO_MODULE" "$GO_MODULE"
-        print_success "安装 .cursorrules"
-    fi
+    # 根据检测到的 AI 工具安装对应文件
+    case "$DETECTED_AI_TOOL" in
+        cursor)
+            # 仅安装 Cursor 相关文件
+            if [ -d "${GO_ZERO_DIR}/.cursor/commands" ]; then
+                cp -r "${GO_ZERO_DIR}/.cursor/commands/"* ".cursor/commands/" 2>/dev/null || true
+                print_success "安装 .cursor/commands/ (智能场景命令)"
+            fi
+            
+            if [ -f "${GO_ZERO_DIR}/.cursorrules.tpl" ]; then
+                cp "${GO_ZERO_DIR}/.cursorrules.tpl" ".cursorrules"
+                replace_template_vars ".cursorrules" \
+                    "PROJECT_NAME" "$PROJECT_NAME" \
+                    "GO_MODULE" "$GO_MODULE"
+                print_success "安装 .cursorrules"
+            fi
+            ;;
+        claude)
+            # 仅安装 Claude 相关文件
+            if [ -d "${GO_ZERO_DIR}/.claude/commands" ]; then
+                cp -r "${GO_ZERO_DIR}/.claude/commands/"* ".claude/commands/" 2>/dev/null || true
+                print_success "安装 .claude/commands/ (智能场景命令)"
+            fi
+            
+            if [ -f "${GO_ZERO_DIR}/CLAUDE.md.tpl" ]; then
+                cp "${GO_ZERO_DIR}/CLAUDE.md.tpl" "CLAUDE.md"
+                replace_template_vars "CLAUDE.md" \
+                    "PROJECT_NAME" "$PROJECT_NAME" \
+                    "GO_MODULE" "$GO_MODULE"
+                print_success "安装 CLAUDE.md"
+            fi
+            ;;
+        both)
+            # 安装两种 AI 工具文件
+            if [ -d "${GO_ZERO_DIR}/.cursor/commands" ]; then
+                mkdir -p ".cursor/commands"
+                cp -r "${GO_ZERO_DIR}/.cursor/commands/"* ".cursor/commands/" 2>/dev/null || true
+                print_success "安装 .cursor/commands/ (智能场景命令)"
+            fi
+            
+            if [ -d "${GO_ZERO_DIR}/.claude/commands" ]; then
+                cp -r "${GO_ZERO_DIR}/.claude/commands/"* ".claude/commands/" 2>/dev/null || true
+                print_success "安装 .claude/commands/ (智能场景命令)"
+            fi
+            
+            if [ -f "${GO_ZERO_DIR}/CLAUDE.md.tpl" ]; then
+                cp "${GO_ZERO_DIR}/CLAUDE.md.tpl" "CLAUDE.md"
+                replace_template_vars "CLAUDE.md" \
+                    "PROJECT_NAME" "$PROJECT_NAME" \
+                    "GO_MODULE" "$GO_MODULE"
+                print_success "安装 CLAUDE.md"
+            fi
+            
+            if [ -f "${GO_ZERO_DIR}/.cursorrules.tpl" ]; then
+                cp "${GO_ZERO_DIR}/.cursorrules.tpl" ".cursorrules"
+                replace_template_vars ".cursorrules" \
+                    "PROJECT_NAME" "$PROJECT_NAME" \
+                    "GO_MODULE" "$GO_MODULE"
+                print_success "安装 .cursorrules"
+            fi
+            ;;
+        *)
+            print_warning "未检测到 AI 工具，跳过 AI 命令安装"
+            ;;
+    esac
 }
 
 # 初始化部署文件
@@ -712,11 +749,31 @@ main() {
         exit 1
     fi
     
-    if [ -d ".cursor/commands" ]; then
-        print_success "发现 .cursor/commands/ 目录"
+    # 检测并设置 AI 工具类型
+    local has_cursor=false
+    local has_claude=false
+    
+    if [ -d ".cursor/commands" ] || [ -d ".cursor" ]; then
+        has_cursor=true
+        print_success "发现 Cursor 环境 (.cursor/)"
     fi
-    if [ -d ".claude/commands" ]; then
-        print_success "发现 .claude/commands/ 目录"
+    if [ -d ".claude/commands" ] || [ -d ".claude" ]; then
+        has_claude=true
+        print_success "发现 Claude 环境 (.claude/)"
+    fi
+    
+    # 设置 DETECTED_AI_TOOL
+    if [ "$has_cursor" = true ] && [ "$has_claude" = true ]; then
+        DETECTED_AI_TOOL="both"
+        print_info "将安装 Cursor + Claude 工具文件"
+    elif [ "$has_cursor" = true ]; then
+        DETECTED_AI_TOOL="cursor"
+        print_info "将仅安装 Cursor 工具文件"
+    elif [ "$has_claude" = true ]; then
+        DETECTED_AI_TOOL="claude"
+        print_info "将仅安装 Claude 工具文件"
+    else
+        print_warning "未检测到 AI 工具环境"
     fi
     
     # Step 2: 选择服务类型

@@ -25,6 +25,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - 支持多环境部署 (dev/prod)
 - 支持 HPA 自动扩缩容
 - 支持 PDB 确保高可用
+- **安装脚本智能检测 AI 工具**
+  - 根据 Spec Kit 初始化的 AI 工具自动选择安装内容
+  - Cursor 环境: 仅安装 `.cursor/commands/` + `.cursorrules`
+  - Claude 环境: 仅安装 `.claude/commands/` + `CLAUDE.md`
+  - 双环境: 安装所有 AI 工具文件
 
 ### Changed
 
