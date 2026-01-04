@@ -37,12 +37,20 @@ IDRM SDD Templates 是一套基于 [Spec Kit](https://github.com/anthropics/spec
 ```bash
 # Step 1: 安装 Spec Kit CLI
 uv tool install specify-cli --from git+https://github.com/github/spec-kit.git
+```
 
+```bash
 # Step 2: 使用 Spec Kit 官方初始化 (选择 Cursor 或 Claude)
 specify init . --ai cursor-agent --force
-# 或
-specify init . --ai claude --force
+```
 
+或
+
+```bash
+specify init . --ai claude --force
+```
+
+```bash
 # Step 3: 安装 IDRM SDD Template
 curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-install.sh | bash
 ```
