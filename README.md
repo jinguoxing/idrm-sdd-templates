@@ -49,6 +49,14 @@ curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/s
 
 ### 交互式安装
 
+如需选择服务类型和配置数据库，需要**先下载脚本再运行**：
+
+```bash
+# 下载脚本后交互运行
+curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-install.sh -o /tmp/sdd-install.sh
+bash /tmp/sdd-install.sh
+```
+
 安装脚本会引导你完成以下配置：
 
 1. **选择服务类型** - API / RPC / Job / Consumer (可多选)
@@ -56,9 +64,9 @@ curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/s
 3. **配置数据库** - MySQL 连接信息
 4. **确认并安装**
 
-### 非交互式安装
+### 非交互式安装 (CI/CD)
 
-通过管道执行时自动进入非交互模式（适用于 CI/CD）：
+通过管道执行时自动进入非交互模式：
 
 ```bash
 # 仅安装模板，使用默认配置

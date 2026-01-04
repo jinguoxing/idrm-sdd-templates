@@ -74,15 +74,42 @@ git clone https://github.com/jinguoxing/idrm-sdd-templates.git /tmp/idrm-sdd
 
 ---
 
-## 非交互式安装
+## 交互式安装 vs 非交互式安装
 
-当通过 `curl | bash` 执行时，脚本会自动进入非交互模式：
+### 非交互式安装 (自动模式)
 
+通过 `curl | bash` 管道执行时，脚本会自动进入非交互模式：
+
+```bash
+# 非交互模式 - 自动使用默认配置
+curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-install.sh | bash
+```
+
+非交互模式的行为：
 - 自动跳过服务类型选择 (仅安装模板)
 - 使用当前目录名作为项目名称
 - 使用默认 Go Module 路径
 
-这使得脚本可以在 CI/CD 或自动化脚本中使用。
+适用场景：CI/CD、自动化脚本、快速测试
+
+### 交互式安装 (手动选择)
+
+如需选择服务类型和配置数据库，需要**先下载脚本再运行**：
+
+```bash
+# 方式 1: 下载到临时目录后运行
+curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-install.sh -o /tmp/sdd-install.sh
+bash /tmp/sdd-install.sh
+
+# 方式 2: 克隆仓库后运行
+git clone https://github.com/jinguoxing/idrm-sdd-templates.git /tmp/idrm-sdd
+bash /tmp/idrm-sdd/scripts/sdd-install.sh
+```
+
+> **为什么 `curl | bash` 是非交互的？**
+> 
+> 因为 `curl | bash` 会将 `stdin` 用于脚本内容，导致 `read` 命令无法从终端读取用户输入。
+> 下载脚本后单独运行可以恢复正常的终端交互。
 
 ---
 
