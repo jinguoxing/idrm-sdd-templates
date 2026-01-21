@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"net/http"
 
 	"{{GO_MODULE}}/api/internal/config"
 	"{{GO_MODULE}}/api/internal/handler"
@@ -49,6 +50,16 @@ func main() {
 
 	// 注册路由
 	handler.RegisterHandlers(server, ctx)
+
+	// 注册 Swagger 路由
+	if c.Swagger.Enabled {
+		fmt.Printf("Swagger 文档地址: http://%s:%d/swagger/\n", c.Host, c.Port)
+		server.AddRoute(rest.Route{
+			Method:  http.MethodGet,
+			Path:    "/swagger/*",
+			Handler: http.StripPrefix("/swagger/", http.FileServer(http.Dir(c.Swagger.Path))).ServeHTTP,
+		})
+	}
 
 	fmt.Printf("启动 API 服务: %s:%d\n", c.Host, c.Port)
 	server.Start()

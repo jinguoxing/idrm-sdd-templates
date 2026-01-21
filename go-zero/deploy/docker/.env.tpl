@@ -1,0 +1,42 @@
+# 项目名称 (用于 Docker Compose 网络和容器前缀)
+COMPOSE_PROJECT_NAME={{PROJECT_NAME}}
+
+# 服务配置
+API_PORT=8888
+ENVIRONMENT=dev
+LOG_LEVEL=info
+
+# 数据库配置
+DB_HOST=mysql
+DB_PORT=3306
+DB_NAME={{DB_NAME}}
+DB_USER=root
+DB_PASSWORD=root
+DB_MAX_IDLE_CONNS=10
+DB_MAX_OPEN_CONNS=100
+DB_LOG_LEVEL=warn
+
+# Redis 配置
+REDIS_HOST=redis
+REDIS_PORT=6379
+REDIS_DB=0
+REDIS_PASSWORD=
+
+# 认证配置
+ACCESS_SECRET={{ACCESS_SECRET}}
+ACCESS_EXPIRE=7200
+
+# Telemetry 配置
+SERVICE_VERSION=1.0.0
+LOG_MODE=console
+LOG_REMOTE_URL=http://log-collector:8080/api/logs
+TRACE_ENABLED=false
+TRACE_ENDPOINT=localhost:4317
+AUDIT_ENABLED=false
+AUDIT_URL=http://audit-service:8080/api/audit
+
+# Swagger 配置
+SWAGGER_ENABLED=true
+
+# 时区
+TZ=Asia/Shanghai

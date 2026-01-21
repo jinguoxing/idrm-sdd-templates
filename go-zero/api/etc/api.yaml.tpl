@@ -62,3 +62,8 @@ Redis:
 Auth:
   AccessSecret: ${ACCESS_SECRET}
   AccessExpire: ${ACCESS_EXPIRE:-7200}
+
+# Swagger 配置
+Swagger:
+  Enabled: ${SWAGGER_ENABLED:-true}
+  Path: api/doc/swagger

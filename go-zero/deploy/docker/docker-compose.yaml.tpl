@@ -9,16 +9,32 @@ services:
     ports:
       - "${API_PORT:-8888}:8888"
     environment:
-      - TZ=Asia/Shanghai
+    environment:
+      - TZ=${TZ:-Asia/Shanghai}
       - ENVIRONMENT=${ENVIRONMENT:-dev}
       - LOG_LEVEL=${LOG_LEVEL:-info}
-      - LOG_MODE=console
+      # Telemetry 配置
+      - SERVICE_VERSION=${SERVICE_VERSION:-1.0.0}
+      - LOG_MODE=${LOG_MODE:-console}
+      - LOG_REMOTE_URL=${LOG_REMOTE_URL}
+      - TRACE_ENABLED=${TRACE_ENABLED:-false}
+      - TRACE_ENDPOINT=${TRACE_ENDPOINT}
+      - AUDIT_ENABLED=${AUDIT_ENABLED:-false}
+      - AUDIT_URL=${AUDIT_URL}
       # 数据库配置
-      - DB_HOST=mysql
-      - DB_PORT=3306
+      - DB_HOST=${DB_HOST:-mysql}
+      - DB_PORT=${DB_PORT:-3306}
       - DB_NAME={{DB_NAME}}
-      - DB_USER=root
+      - DB_USER=${DB_USER:-root}
       - DB_PASSWORD=${DB_PASSWORD}
+      - DB_MAX_IDLE_CONNS=${DB_MAX_IDLE_CONNS:-10}
+      - DB_MAX_OPEN_CONNS=${DB_MAX_OPEN_CONNS:-100}
+      - DB_LOG_LEVEL=${DB_LOG_LEVEL:-warn}
+      # Redis 配置
+      - REDIS_HOST=${REDIS_HOST:-redis}
+      - REDIS_PORT=${REDIS_PORT:-6379}
+      - REDIS_DB=${REDIS_DB:-0}
+      - REDIS_PASSWORD=${REDIS_PASSWORD}
       # 认证配置
       - ACCESS_SECRET=${ACCESS_SECRET}
       - ACCESS_EXPIRE=${ACCESS_EXPIRE:-7200}
