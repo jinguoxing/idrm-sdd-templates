@@ -148,6 +148,13 @@ make lint
 
 # 运行测试
 make test
+
+# 数据库迁移 (golang-migrate)
+make migrate-new MODULE=user NAME=init_table   # 创建迁移文件
+make migrate-up MODULE=user                    # 执行升级
+make migrate-down MODULE=user                  # 执行回滚
+make migrate-status MODULE=user                # 查看状态
+
 ```
 
 ---

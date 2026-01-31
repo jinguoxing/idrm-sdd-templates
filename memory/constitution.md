@@ -152,6 +152,10 @@ HTTP Request → Handler → Logic → Model → Database
 | **时间精度** | `datetime(3)` | 必须使用毫秒精度，避免高并发冲突 |
 | **软删除** | `deleted_at` | 必须存在。唯一索引必须包含此字段: `(code, deleted_at)` |
 | **外键** | 禁止物理外键 | 关联关系在 Service/Logic 层维护 |
+| **DDL 存放** | `migrations/{module}/raw/` | 原始 SQL 设计归档，文件名为 `{table}.sql` |
+| **迁移工具** | `golang-migrate` | 统一使用 golang-migrate，禁止手动执行 |
+| **版本脚本** | `migrations/versions/{module}/` | 存放 `.up.sql` 和 `.down.sql`，必须包含时间戳前缀 |
+
 
 ### 代码示例
 
