@@ -5,6 +5,8 @@
 [![Version](https://img.shields.io/badge/version-0.9.0-blue.svg)](https://github.com/jinguoxing/idrm-sdd-templates)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
+**中文** | [English](./README.en.md)
+
 ---
 
 ## 📖 简介
