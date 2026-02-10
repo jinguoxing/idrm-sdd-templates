@@ -131,9 +131,13 @@ if user == nil {
     return nil, errorx.NewWithCode(errorx.ErrCodeNotFound)
 }
 
-// 自定义业务错误码 (在 internal/errorx/codes.go 定义)
+// 错误码规范: 6位数字
+// 100000 - 100999: 系统错误
+// 200xxx - 999xxx: 业务错误 (前3位代表服务/模块)
+
+// 自定义业务错误码 (需在 internal/errorx/codes.go 定义)
 if user.Status == 0 {
-    return nil, errorx.New(30102, "用户已禁用")
+    return nil, errorx.New(200001, "用户已禁用")
 }
 ```
 
@@ -228,6 +232,9 @@ CREATE TABLE IF NOT EXISTS `table_name` (
     UNIQUE KEY `uk_xxx` (`xxx`),
     KEY `idx_xxx` (`xxx`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci COMMENT='表注释';
+
+-- **重要**: 每个字段必须有 COMMENT 注释
+-- **重要**: 唯一索引必须包含 deleted_at
 ```
 
 ### ORM 选择

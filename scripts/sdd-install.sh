@@ -9,7 +9,7 @@
 
 set -e
 
-VERSION="0.8.3"
+VERSION="0.9.0"
 
 # ============================================================================
 # 公共函数 (内联自 lib/common.sh)
@@ -229,7 +229,7 @@ DB_NAME="idrm"
 # 是否为非交互模式
 NON_INTERACTIVE=false
 
-# 检测到的 AI 工具 (cursor/claude/both)
+# 检测到的 AI 工具 (cursor/claude/copilot/gemini/all)
 DETECTED_AI_TOOL=""
 
 # ============================================================================
@@ -473,6 +473,81 @@ install_ai_commands() {
                 print_success "安装 .cursorrules"
             fi
             ;;
+        copilot)
+            # 仅安装 Copilot 相关文件
+            if [ -d ".github" ]; then
+               mkdir -p ".github"
+            fi
+            
+            if [ -f "${GO_ZERO_DIR}/copilot-instructions.md.tpl" ]; then
+                cp "${GO_ZERO_DIR}/copilot-instructions.md.tpl" ".github/copilot-instructions.md"
+                replace_template_vars ".github/copilot-instructions.md" \
+                    "PROJECT_NAME" "$PROJECT_NAME" \
+                    "GO_MODULE" "$GO_MODULE"
+                print_success "安装 .github/copilot-instructions.md"
+            fi
+            ;;
+        gemini)
+            # 仅安装 Gemini 相关文件
+            if [ -f "${GO_ZERO_DIR}/GEMINI.md.tpl" ]; then
+                cp "${GO_ZERO_DIR}/GEMINI.md.tpl" "GEMINI.md"
+                replace_template_vars "GEMINI.md" \
+                    "PROJECT_NAME" "$PROJECT_NAME" \
+                    "GO_MODULE" "$GO_MODULE"
+                print_success "安装 GEMINI.md"
+            fi
+            ;;
+        all)
+            # 安装所有 AI 工具文件
+            if [ -d "${GO_ZERO_DIR}/.cursor/commands" ]; then
+                mkdir -p ".cursor/commands"
+                cp -r "${GO_ZERO_DIR}/.cursor/commands/"* ".cursor/commands/" 2>/dev/null || true
+                print_success "安装 .cursor/commands/ (智能场景命令)"
+            fi
+            
+            if [ -d "${GO_ZERO_DIR}/.claude/commands" ]; then
+                mkdir -p ".claude/commands"
+                cp -r "${GO_ZERO_DIR}/.claude/commands/"* ".claude/commands/" 2>/dev/null || true
+                print_success "安装 .claude/commands/ (智能场景命令)"
+            fi
+            
+            if [ -f "${GO_ZERO_DIR}/CLAUDE.md.tpl" ]; then
+                cp "${GO_ZERO_DIR}/CLAUDE.md.tpl" "CLAUDE.md"
+                replace_template_vars "CLAUDE.md" \
+                    "PROJECT_NAME" "$PROJECT_NAME" \
+                    "GO_MODULE" "$GO_MODULE"
+                print_success "安装 CLAUDE.md"
+            fi
+            
+            if [ -f "${GO_ZERO_DIR}/.cursorrules.tpl" ]; then
+                cp "${GO_ZERO_DIR}/.cursorrules.tpl" ".cursorrules"
+                replace_template_vars ".cursorrules" \
+                    "PROJECT_NAME" "$PROJECT_NAME" \
+                    "GO_MODULE" "$GO_MODULE"
+                print_success "安装 .cursorrules"
+            fi
+
+            # Copilot
+            if [ -d ".github" ] || [ ! -d ".github" ]; then
+               mkdir -p ".github"
+            fi
+            if [ -f "${GO_ZERO_DIR}/copilot-instructions.md.tpl" ]; then
+                cp "${GO_ZERO_DIR}/copilot-instructions.md.tpl" ".github/copilot-instructions.md"
+                replace_template_vars ".github/copilot-instructions.md" \
+                    "PROJECT_NAME" "$PROJECT_NAME" \
+                    "GO_MODULE" "$GO_MODULE"
+                print_success "安装 .github/copilot-instructions.md"
+            fi
+
+            # Gemini
+            if [ -f "${GO_ZERO_DIR}/GEMINI.md.tpl" ]; then
+                cp "${GO_ZERO_DIR}/GEMINI.md.tpl" "GEMINI.md"
+                replace_template_vars "GEMINI.md" \
+                    "PROJECT_NAME" "$PROJECT_NAME" \
+                    "GO_MODULE" "$GO_MODULE"
+                print_success "安装 GEMINI.md"
+            fi
+            ;;
         *)
             print_warning "未检测到 AI 工具，跳过 AI 命令安装"
             ;;
@@ -491,30 +566,40 @@ init_deploy_files() {
     
     # 根据选择的服务类型复制对应的 Dockerfile
     for service in "${SELECTED_SERVICES[@]}"; do
+        target_file="deploy/docker/Dockerfile.${service}"
+        
+        if [ -f "$target_file" ] && [ "$FORCE_OVERWRITE" = false ]; then
+            continue
+        fi
+
         if [ -f "${GO_ZERO_DIR}/deploy/docker/Dockerfile.${service}.tpl" ]; then
-            cp "${GO_ZERO_DIR}/deploy/docker/Dockerfile.${service}.tpl" "deploy/docker/Dockerfile.${service}"
-            print_success "安装 deploy/docker/Dockerfile.${service}"
+            cp "${GO_ZERO_DIR}/deploy/docker/Dockerfile.${service}.tpl" "$target_file"
+            print_success "安装 $target_file"
         fi
     done
     
     # 复制构建脚本
     if [ -f "${GO_ZERO_DIR}/deploy/docker/build.sh.tpl" ]; then
-        cp "${GO_ZERO_DIR}/deploy/docker/build.sh.tpl" "deploy/docker/build.sh"
-        replace_template_vars "deploy/docker/build.sh" \
-            "PROJECT_NAME" "$PROJECT_NAME" \
-            "DOCKER_REGISTRY" "$DOCKER_REGISTRY"
-        chmod +x "deploy/docker/build.sh"
-        print_success "安装 deploy/docker/build.sh"
+        if [ ! -f "deploy/docker/build.sh" ] || [ "$FORCE_OVERWRITE" = true ]; then
+            cp "${GO_ZERO_DIR}/deploy/docker/build.sh.tpl" "deploy/docker/build.sh"
+            replace_template_vars "deploy/docker/build.sh" \
+                "PROJECT_NAME" "$PROJECT_NAME" \
+                "DOCKER_REGISTRY" "$DOCKER_REGISTRY"
+            chmod +x "deploy/docker/build.sh"
+            print_success "安装 deploy/docker/build.sh"
+        fi
     fi
     
     # 复制 docker-compose.yaml
     if [ -f "${GO_ZERO_DIR}/deploy/docker/docker-compose.yaml.tpl" ]; then
-        cp "${GO_ZERO_DIR}/deploy/docker/docker-compose.yaml.tpl" "deploy/docker/docker-compose.yaml"
-        replace_template_vars "deploy/docker/docker-compose.yaml" \
-            "PROJECT_NAME" "$PROJECT_NAME" \
-            "DB_NAME" "$DB_NAME" \
-            "DB_PASSWORD" "$DB_PASSWORD"
-        print_success "安装 deploy/docker/docker-compose.yaml"
+        if [ ! -f "deploy/docker/docker-compose.yaml" ] || [ "$FORCE_OVERWRITE" = true ]; then
+            cp "${GO_ZERO_DIR}/deploy/docker/docker-compose.yaml.tpl" "deploy/docker/docker-compose.yaml"
+            replace_template_vars "deploy/docker/docker-compose.yaml" \
+                "PROJECT_NAME" "$PROJECT_NAME" \
+                "DB_NAME" "$DB_NAME" \
+                "DB_PASSWORD" "$DB_PASSWORD"
+            print_success "安装 deploy/docker/docker-compose.yaml"
+        fi
     fi
     
     # 复制 K8s base 文件
@@ -562,11 +647,29 @@ init_go_zero_services() {
     
     # 复制并处理 Makefile
     if [ -f "${GO_ZERO_DIR}/Makefile.tpl" ]; then
-        cp "${GO_ZERO_DIR}/Makefile.tpl" "Makefile"
-        replace_template_vars "Makefile" \
-            "PROJECT_NAME" "$PROJECT_NAME" \
-            "DOCKER_REGISTRY" "$DOCKER_REGISTRY"
-        print_success "安装 Makefile"
+        if [ -f "Makefile" ] && [ "$FORCE_OVERWRITE" = false ]; then
+            cp "${GO_ZERO_DIR}/Makefile.tpl" "Makefile.new"
+            replace_template_vars "Makefile.new" \
+                "PROJECT_NAME" "$PROJECT_NAME" \
+                "DOCKER_REGISTRY" "$DOCKER_REGISTRY" \
+                "DB_HOST" "$DB_HOST" \
+                "DB_PORT" "$DB_PORT" \
+                "DB_NAME" "$DB_NAME" \
+                "DB_USER" "$DB_USER" \
+                "DB_PASSWORD" "$DB_PASSWORD"
+            print_warning "Makefile 已存在，新版本已保存为 Makefile.new"
+        else
+            cp "${GO_ZERO_DIR}/Makefile.tpl" "Makefile"
+            replace_template_vars "Makefile" \
+                "PROJECT_NAME" "$PROJECT_NAME" \
+                "DOCKER_REGISTRY" "$DOCKER_REGISTRY" \
+                "DB_HOST" "$DB_HOST" \
+                "DB_PORT" "$DB_PORT" \
+                "DB_NAME" "$DB_NAME" \
+                "DB_USER" "$DB_USER" \
+                "DB_PASSWORD" "$DB_PASSWORD"
+            print_success "安装 Makefile"
+        fi
     fi
     
     # 复制部署文件
@@ -574,10 +677,12 @@ init_go_zero_services() {
     
     # 复制并处理 go.mod
     if [ -f "${GO_ZERO_DIR}/go.mod.tpl" ]; then
-        cp "${GO_ZERO_DIR}/go.mod.tpl" "go.mod"
-        replace_template_vars "go.mod" \
-            "GO_MODULE" "$GO_MODULE"
-        print_success "安装 go.mod"
+        if [ ! -f "go.mod" ] || [ "$FORCE_OVERWRITE" = true ]; then
+            cp "${GO_ZERO_DIR}/go.mod.tpl" "go.mod"
+            replace_template_vars "go.mod" \
+                "GO_MODULE" "$GO_MODULE"
+            print_success "安装 go.mod"
+        fi
     fi
     
     # 初始化各服务
@@ -602,6 +707,11 @@ init_go_zero_services() {
 # 初始化 API 服务
 init_api_service() {
     local access_secret=$1
+    
+    if [ -d "api" ] && [ "$FORCE_OVERWRITE" = false ]; then
+        print_warning "跳过已存在的服务目录: api/"
+        return
+    fi
     
     mkdir -p api/doc/swagger api/etc api/internal/svc
     
@@ -656,6 +766,11 @@ init_api_service() {
 
 # 初始化 RPC 服务
 init_rpc_service() {
+    if [ -d "rpc" ] && [ "$FORCE_OVERWRITE" = false ]; then
+        print_warning "跳过已存在的服务目录: rpc/"
+        return
+    fi
+
     mkdir -p rpc/proto rpc/etc rpc/internal/svc rpc/internal/logic rpc/internal/server
     
     # 复制并处理 rpc.yaml
@@ -674,6 +789,11 @@ init_rpc_service() {
 
 # 初始化 Job 服务
 init_job_service() {
+    if [ -d "job" ] && [ "$FORCE_OVERWRITE" = false ]; then
+        print_warning "跳过已存在的服务目录: job/"
+        return
+    fi
+
     mkdir -p job/etc job/internal/svc job/internal/logic
     
     # 复制并处理 job.yaml
@@ -692,6 +812,11 @@ init_job_service() {
 
 # 初始化 Consumer 服务
 init_consumer_service() {
+    if [ -d "consumer" ] && [ "$FORCE_OVERWRITE" = false ]; then
+        print_warning "跳过已存在的服务目录: consumer/"
+        return
+    fi
+
     mkdir -p consumer/etc consumer/internal/svc consumer/internal/handler consumer/internal/logic
     
     # 复制并处理 consumer.yaml
@@ -731,6 +856,12 @@ print_finish() {
     fi
     if [ -d ".claude" ]; then
         echo "  ├── .claude/            # Claude 命令"
+    fi
+    if [ -f ".github/copilot-instructions.md" ]; then
+        echo "  ├── .github/copilot-instructions.md # Copilot 指令"
+    fi
+    if [ -f "GEMINI.md" ]; then
+        echo "  ├── GEMINI.md           # Gemini 上下文"
     fi
     
     for service in "${SELECTED_SERVICES[@]}"; do
@@ -794,18 +925,22 @@ main() {
         print_success "发现 Claude 环境 (.claude/)"
     fi
     
-    # 设置 DETECTED_AI_TOOL
-    if [ "$has_cursor" = true ] && [ "$has_claude" = true ]; then
-        DETECTED_AI_TOOL="both"
-        print_info "将安装 Cursor + Claude 工具文件"
-    elif [ "$has_cursor" = true ]; then
-        DETECTED_AI_TOOL="cursor"
-        print_info "将仅安装 Cursor 工具文件"
-    elif [ "$has_claude" = true ]; then
-        DETECTED_AI_TOOL="claude"
-        print_info "将仅安装 Claude 工具文件"
-    else
-        print_warning "未检测到 AI 工具环境"
+    # 设置 DETECTED_AI_TOOL - 默认安装所有支持
+    DETECTED_AI_TOOL="all"
+    print_info "将安装所有 AI 工具支持 (Cursor + Claude + Copilot + Gemini)"
+
+    # 检测项目是否已初始化
+    FORCE_OVERWRITE=true
+    if [ -f "Makefile" ] || [ -d "deploy" ]; then
+        echo ""
+        print_warning "检测到项目已初始化 (Makefile 或 deploy/ 已存在)"
+        if confirm "保留现有项目文件 (Makefile, deploy/, api/)? (选 Y 为增量模式，推荐)" "Y"; then
+            FORCE_OVERWRITE=false
+            print_info "启用增量模式: 将跳过已存在的文件"
+        else
+            FORCE_OVERWRITE=true
+            print_warning "启用覆盖模式: 将覆盖所有文件"
+        fi
     fi
     
     # Step 2: 选择服务类型

@@ -5,7 +5,7 @@
 
 set -e
 
-VERSION="0.8.3"
+VERSION="0.9.0"
 
 # ============================================
 # 公共函数 (内联)
@@ -185,6 +185,10 @@ upgrade_templates() {
     
     # 更新 .cursorrules
     if [ -f "${GO_ZERO_DIR}/.cursorrules.tpl" ] && [ -n "$project_name" ]; then
+        if [ -f ".cursorrules" ]; then
+            cp ".cursorrules" ".cursorrules.bak"
+            print_warning "已备份旧配置到 .cursorrules.bak"
+        fi
         cp "${GO_ZERO_DIR}/.cursorrules.tpl" ".cursorrules"
         sed -i.bak "s/{{PROJECT_NAME}}/${project_name}/g" ".cursorrules"
         sed -i.bak "s|{{GO_MODULE}}|${go_module}|g" ".cursorrules"
@@ -194,11 +198,42 @@ upgrade_templates() {
     
     # 更新 CLAUDE.md
     if [ -f "${GO_ZERO_DIR}/CLAUDE.md.tpl" ] && [ -n "$project_name" ]; then
+        if [ -f "CLAUDE.md" ]; then
+            cp "CLAUDE.md" "CLAUDE.md.bak"
+            print_warning "已备份旧配置到 CLAUDE.md.bak"
+        fi
         cp "${GO_ZERO_DIR}/CLAUDE.md.tpl" "CLAUDE.md"
         sed -i.bak "s/{{PROJECT_NAME}}/${project_name}/g" "CLAUDE.md"
         sed -i.bak "s|{{GO_MODULE}}|${go_module}|g" "CLAUDE.md"
         rm -f "CLAUDE.md.bak"
         print_success "更新 CLAUDE.md"
+    fi
+
+    # 更新 Copilot Instructions
+    if [ -f "${GO_ZERO_DIR}/copilot-instructions.md.tpl" ] && [ -n "$project_name" ]; then
+        if [ ! -d ".github" ]; then mkdir -p ".github"; fi
+        if [ -f ".github/copilot-instructions.md" ]; then
+            cp ".github/copilot-instructions.md" ".github/copilot-instructions.md.bak"
+            print_warning "已备份旧配置到 .github/copilot-instructions.md.bak"
+        fi
+        cp "${GO_ZERO_DIR}/copilot-instructions.md.tpl" ".github/copilot-instructions.md"
+        sed -i.bak "s/{{PROJECT_NAME}}/${project_name}/g" ".github/copilot-instructions.md"
+        sed -i.bak "s|{{GO_MODULE}}|${go_module}|g" ".github/copilot-instructions.md"
+        rm -f ".github/copilot-instructions.md.bak"
+        print_success "更新 .github/copilot-instructions.md"
+    fi
+
+    # 更新 GEMINI.md
+    if [ -f "${GO_ZERO_DIR}/GEMINI.md.tpl" ] && [ -n "$project_name" ]; then
+        if [ -f "GEMINI.md" ]; then
+            cp "GEMINI.md" "GEMINI.md.bak"
+            print_warning "已备份旧配置到 GEMINI.md.bak"
+        fi
+        cp "${GO_ZERO_DIR}/GEMINI.md.tpl" "GEMINI.md"
+        sed -i.bak "s/{{PROJECT_NAME}}/${project_name}/g" "GEMINI.md"
+        sed -i.bak "s|{{GO_MODULE}}|${go_module}|g" "GEMINI.md"
+        rm -f "GEMINI.md.bak"
+        print_success "更新 GEMINI.md"
     fi
     
     # 更新 workflows

@@ -71,14 +71,15 @@ go get github.com/jinguoxing/idrm-go-base@latest
 | 4 | 实现 Model 接口 | AI 手写 | `model/{module}/{feature}/` |
 | 5 | 实现 Logic 层 | AI 实现 | `api/internal/logic/` |
 
-> ⚠️ **重要**：goctl 必须在 `api/doc/api.api` 入口文件上执行，不能针对单个功能文件！
+### Code Generation (Phase 4 Action)
 
-**goctl 命令**:
-```bash
-# 步骤1：在 api/doc/api.api 中 import 新模块
-# 步骤2：执行 goctl 生成代码（针对整个项目）
-goctl api go -api api/doc/api.api -dir api/ --style=go_zero --type-group
-```
+> **Agent Instruction**: You **MUST** execute the following command when starting **Phase 4 (Implement)**.
+
+1. **Pre-check**: Ensure the new `.api` file is imported in `api/doc/api.api`.
+2. **Execute**:
+   ```bash
+   make api
+   ```
 
 ---
 

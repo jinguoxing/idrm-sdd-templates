@@ -90,7 +90,7 @@ import "github.com/jinguoxing/idrm-go-base/{module}"
 所有表使用 UUID v7 作为主键：
 
 ```sql
-`id` CHAR(36) NOT NULL COMMENT 'ID (UUID v7)'
+`id` CHAR(36) NOT NULL COMMENT 'ID (UUID v7)' -- 必须有注释
 ```
 
 ```go
@@ -184,9 +184,10 @@ if user == nil {
     return nil, errorx.NewWithCode(errorx.ErrCodeNotFound)
 }
 
-// 自定义业务错误码 (在 internal/errorx/codes.go 定义)
+// 自定义业务错误码 (需在 internal/errorx/codes.go 定义)
+// 规范: 6位数字 (前3位代表服务/模块)
 if user.Status == 0 {
-    return nil, errorx.New(30102, "用户已禁用")
+    return nil, errorx.New(200001, "用户已禁用")
 }
 ```
 

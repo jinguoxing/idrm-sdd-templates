@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # Docker 镜像构建脚本
-# 用法: ./build.sh [service] [tag]
-#   service: api, rpc, job, consumer, all (默认: all)
+# 用法: ./build.sh [tag] [service]
 #   tag: 镜像标签 (默认: latest)
+#   service: api, rpc, job, consumer, all (默认: all)
 
 set -e
 
@@ -20,8 +20,13 @@ build_service() {
     local dockerfile="deploy/docker/Dockerfile.${svc}"
     
     if [ ! -f "$dockerfile" ]; then
-        echo "⚠️  跳过 $svc: Dockerfile 不存在"
-        return
+        # 尝试查找 fallback 位置 (兼容旧结构)
+        if [ -f "deploy/Dockerfile.${svc}" ]; then
+            dockerfile="deploy/Dockerfile.${svc}"
+        else
+            # 静默跳过, 因为不是所有项目都有所有服务
+            return
+        fi
     fi
     
     local image="${REGISTRY}/${PROJECT}-${svc}:${TAG}"
@@ -55,7 +60,9 @@ echo ""
 echo "推送镜像:"
 if [ "$SERVICE" = "all" ]; then
     for svc in "${AVAILABLE_SERVICES[@]}"; do
-        echo "  docker push ${REGISTRY}/${PROJECT}-${svc}:${TAG}"
+        if [ -f "deploy/docker/Dockerfile.${svc}" ] || [ -f "deploy/Dockerfile.${svc}" ]; then
+            echo "  docker push ${REGISTRY}/${PROJECT}-${svc}:${TAG}"
+        fi
     done
 else
     echo "  docker push ${REGISTRY}/${PROJECT}-${SERVICE}:${TAG}"

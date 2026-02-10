@@ -209,6 +209,13 @@ make docker-build
 make k8s-deploy-dev     # 部署开发环境
 make k8s-deploy-prod    # 部署生产环境
 make k8s-status         # 查看状态
+
+# 数据库迁移
+make migrate-create MODULE=user NAME=add_field  # 创建迁移
+make migrate-up                                 # 执行迁移
+make migrate-down                               # 回滚迁移
+make migrate-status                             # 查看状态
+make migrate-force MODULE=user VERSION=x        # 强制设置版本
 ```
 
 ---

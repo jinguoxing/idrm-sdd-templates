@@ -17,7 +17,7 @@ IDRM SDD Templates 是一套基于 [Spec Kit](https://github.com/anthropics/spec
 - 🏗️ **Go-Zero 分层架构** - Handler → Logic → Model
 - 🔄 **双 ORM 支持** - GORM + SQLx 灵活切换
 - 📦 **多服务类型** - API / RPC / Job / Consumer
-- 🤖 **AI 工具集成** - 支持 Cursor 和 Claude Code
+- 🤖 **全方位 AI 集成** - 支持 Cursor, Claude Code, GitHub Copilot, Gemini
 - 📋 **质量门禁** - 内置检查清单和宪法约束
 - 🎭 **场景化工作流** - 4 种场景智能匹配 (新功能/小改动/扩展/重构)
 - 📝 **Delta 格式** - 变更追踪 (ADDED/MODIFIED/REMOVED)
@@ -111,6 +111,8 @@ my-project/
 ├── .claude/commands/            # Claude 命令
 │   ├── speckit.start.md         # 智能场景启动 [NEW]
 │   └── speckit.*.md             # 官方命令
+├── .github/copilot-instructions.md # Copilot 指令 [NEW]
+├── GEMINI.md                    # Gemini 上下文 [NEW]
 ├── api/                         # API 服务
 │   ├── doc/
 │   │   ├── api.api              # API 入口
