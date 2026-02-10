@@ -2,7 +2,7 @@
 
 > **Spec-Driven Development Templates for Go-Zero Projects**
 
-[![Version](https://img.shields.io/badge/version-0.8.0-blue.svg)](https://github.com/jinguoxing/idrm-sdd-templates)
+[![Version](https://img.shields.io/badge/version-0.9.0-blue.svg)](https://github.com/jinguoxing/idrm-sdd-templates)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 
 ---
@@ -18,6 +18,8 @@ IDRM SDD Templates 是一套基于 [Spec Kit](https://github.com/anthropics/spec
 - 🔄 **双 ORM 支持** - GORM + SQLx 灵活切换
 - 📦 **多服务类型** - API / RPC / Job / Consumer
 - 🤖 **全方位 AI 集成** - 支持 Cursor, Claude Code, GitHub Copilot, Gemini
+- 🔄 **增量更新** - 支持在现有项目中安全添加新服务 (如仅添加 RPC)
+- 🛡️ **安全升级** - 升级脚本自动备份配置文件，保护自定义 Prompt
 - 📋 **质量门禁** - 内置检查清单和宪法约束
 - 🎭 **场景化工作流** - 4 种场景智能匹配 (新功能/小改动/扩展/重构)
 - 📝 **Delta 格式** - 变更追踪 (ADDED/MODIFIED/REMOVED)
@@ -82,6 +84,8 @@ bash /tmp/sdd-install.sh
 # 仅安装模板，使用默认配置
 curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-install.sh | bash
 ```
+
+> 💡 **提示**: 如果在已初始化的项目中运行安装脚本，它会检测并询问是否进行 **增量安装**，允许你安全地添加新服务（如 Job/Consumer）而不覆盖现有代码。
 
 ---
 
@@ -202,7 +206,7 @@ make migrate-status MODULE=user                # 查看状态
 curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-upgrade.sh -o /tmp/sdd-upgrade.sh
 bash /tmp/sdd-upgrade.sh --check
 
-# 执行升级
+# 执行升级 (自动备份 .cursorrules 等配置)
 curl -sSL https://raw.githubusercontent.com/jinguoxing/idrm-sdd-templates/main/scripts/sdd-upgrade.sh -o /tmp/sdd-upgrade.sh
 bash /tmp/sdd-upgrade.sh
 ```
